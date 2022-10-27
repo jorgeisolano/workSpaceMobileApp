@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppNavigation
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.WorkSpaceAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,22 +23,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    AppNavigation()
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     WorkSpaceAppTheme {
-        Greeting("Android")
+        AppNavigation()
     }
 }
