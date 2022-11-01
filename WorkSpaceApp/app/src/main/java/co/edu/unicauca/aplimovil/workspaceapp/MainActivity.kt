@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import co.edu.unicauca.aplimovil.workspaceapp.models.Place
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppNavigation
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.WorkSpaceAppTheme
 
@@ -23,6 +24,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+                    val place = Place(1,"asd","asd","asd","asd","asd","asd","asd")
+                    println("RESPUESTA" + place.save())
                     AppNavigation()
                 }
             }

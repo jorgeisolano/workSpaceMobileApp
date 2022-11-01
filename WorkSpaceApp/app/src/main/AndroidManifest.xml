@@ -7,7 +7,9 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
+        tools:replace="android:icon"
         android:label="@string/app_name"
+        android:name="com.orm.SugarApp"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WorkSpaceApp"
@@ -27,6 +29,19 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <meta-data
+            android:name="DATABASE"
+            android:value="WorkSpace.db" />
+        <meta-data
+            android:name="VERSION"
+            android:value="1" />
+        <meta-data
+            android:name="QUERY_LOG"
+            android:value="true" />
+
+        <meta-data
+            android:name="DOMAIN_PACKAGE_NAME"
+            android:value="co.edu.unicauca.aplimovil.workspaceapp.models" />
     </application>
 
 </manifest>
