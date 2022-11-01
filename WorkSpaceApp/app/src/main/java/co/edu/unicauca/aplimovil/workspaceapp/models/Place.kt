@@ -3,9 +3,29 @@ package co.edu.unicauca.aplimovil.workspaceapp.models
 import com.orm.SugarRecord
 
 
-class Place(val id : Int, val name : String, val city : String,
-val description : String, val address : String, val lat : String,
-val long : String, val image : String) : SugarRecord<Place>() {
+class Place : SugarRecord<Place>{
 
+    var id: Int? = null;
+    var name : String? = null;
+    var city : String? = null;
+    var description : String? = null;
+    var address : String? = null;
+    var lat : String? = null;
+    var long : String? = null;
+    var image : String? = null;
 
+    constructor(){}
+
+    constructor(id : Long, name : String,  city : String,
+                description : String,  address : String, lat : String,
+                long : String,  image : String)  {
+        this.id=id
+        this.name=name
+        this.city=city
+        this.description=description
+        this.address=address
+        this.lat=lat
+        this.long=long
+        this.image=image
+    }
 }

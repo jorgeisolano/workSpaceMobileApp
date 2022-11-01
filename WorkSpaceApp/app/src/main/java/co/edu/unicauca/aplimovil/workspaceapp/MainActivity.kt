@@ -25,7 +25,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val place = Place(1,"asd","asd","asd","asd","asd","asd","asd")
-                    println("RESPUESTA" + place.save())
+                    place.save()
+
                     AppNavigation()
                 }
             }
