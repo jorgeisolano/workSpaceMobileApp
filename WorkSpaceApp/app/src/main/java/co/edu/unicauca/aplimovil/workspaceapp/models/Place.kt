@@ -3,7 +3,7 @@ package co.edu.unicauca.aplimovil.workspaceapp.models
 import com.orm.SugarRecord
 
 
-class Place : SugarRecord<Place>{
+class Place : SugarRecord{
 
     var id: Int? = null;
     var name : String? = null;
@@ -14,12 +14,10 @@ class Place : SugarRecord<Place>{
     var long : String? = null;
     var image : String? = null;
 
-    constructor(){}
-
-    constructor(id : Long, name : String,  city : String,
+    constructor(id : Int, name : String,  city : String,
                 description : String,  address : String, lat : String,
                 long : String,  image : String)  {
-        this.id=id
+        this.id = id
         this.name=name
         this.city=city
         this.description=description

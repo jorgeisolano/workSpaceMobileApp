@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppNavigation
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.WorkSpaceAppTheme
+import com.orm.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,9 +25,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val place = Place(1,"asd","asd","asd","asd","asd","asd","asd")
+                    val place = Place(2,"Jorge","asd","asd","asd","asd","asd","asd")
                     place.save()
-
                     AppNavigation()
                 }
             }

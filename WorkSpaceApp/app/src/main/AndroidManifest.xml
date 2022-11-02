@@ -42,7 +42,7 @@
 
         <meta-data
             android:name="DOMAIN_PACKAGE_NAME"
-            android:value="co.edu.unicauca.aplimovil.workspaceapp" />
+            android:value="co.edu.unicauca.aplimovil.workspaceapp.models" />
     </application>
 
 </manifest>
