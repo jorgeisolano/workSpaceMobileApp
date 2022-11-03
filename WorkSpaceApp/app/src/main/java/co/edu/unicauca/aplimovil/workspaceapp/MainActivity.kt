@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
+import co.edu.unicauca.aplimovil.workspaceapp.models.Schedule
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppNavigation
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.WorkSpaceAppTheme
 import com.orm.*
@@ -25,8 +26,16 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val place = Place(2,"Jorge","asd","asd","asd","asd","asd","asd")
-                    place.save()
+                    /*val place = Place("Jorge", "asd", "asd", "asd", "asd", "asd", "asd")
+                    val idPlace = place.save()
+                    val schedule = Schedule(idPlace.toInt(), "Lunes", "YA", "Mañana")
+                    schedule.place = place
+                    schedule.save()*/
+                    val place = SugarRecord.findById(Place::class.java,26)
+                    println("--------------------")
+                    for(schedule in place.get_Schedules()){
+                        println("aSD" + schedule.day)
+                    }
                     AppNavigation()
                 }
             }
