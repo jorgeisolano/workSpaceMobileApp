@@ -6,12 +6,14 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:name="com.orm.SugarApp"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WorkSpaceApp"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        tools:replace="android:icon">
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -32,6 +34,19 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <meta-data
+            android:name="DATABASE"
+            android:value="WorkSpace.db" />
+        <meta-data
+            android:name="VERSION"
+            android:value="3" />
+        <meta-data
+            android:name="QUERY_LOG"
+            android:value="true" />
+
+        <meta-data
+            android:name="DOMAIN_PACKAGE_NAME"
+            android:value="co.edu.unicauca.aplimovil.workspaceapp.models" />
     </application>
 
 </manifest>
