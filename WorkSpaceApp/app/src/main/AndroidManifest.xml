@@ -13,8 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WorkSpaceApp"
         tools:targetApi="31"
-        tools:replace="android:icon"
-        >
+        tools:replace="android:icon">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAPgLiaEguKhGWQv5k9wKzIvbTjDnFiMG4"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
