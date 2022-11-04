@@ -3,6 +3,7 @@ package co.edu.unicauca.aplimovil.workspaceapp.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -50,13 +51,13 @@ fun DetailScreen(navController: NavController){
 fun DetailsTopBar(navController: NavController?){
     Column() {
         TopAppBar(backgroundColor = Color.White){
-            Icon(imageVector = Icons.Default.ArrowBack,
+            Icon(imageVector = Icons.Default.KeyboardArrowLeft,
                 contentDescription = "Arrow Back",
-                modifier = Modifier
+                modifier = Modifier.size(33.dp)
                     .clickable { navController?.popBackStack() })
             Column(modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 20.dp),
+                .padding(top = 14.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = "Tinkko", fontWeight = FontWeight.Bold, fontSize = 22.sp)
