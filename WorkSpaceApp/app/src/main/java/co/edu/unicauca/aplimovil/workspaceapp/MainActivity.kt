@@ -26,12 +26,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    /*val place = Place("Jorge", "asd", "asd", "asd", "asd", "asd", "asd")
+                    val place = Place("Jorge", "asd", "asd", "asd", "asd", "asd", "asd")
                     val idPlace = place.save()
                     val schedule = Schedule(idPlace.toInt(), "Lunes", "YA", "Mañana")
                     schedule.place = place
-                    schedule.save()*/
-                    val place = SugarRecord.findById(Place::class.java,26)
+                    schedule.save()
+                    //val place = SugarRecord.findById(Place::class.java,26)
                     println("--------------------")
                     for(schedule in place.get_Schedules()){
                         println("aSD" + schedule.day)
