@@ -5,7 +5,6 @@ import com.orm.dsl.Ignore
 
 
 class Place : SugarRecord{
-
     var id : Number? = null;
     var name : String? = null;
     var city : String? = null;
@@ -14,11 +13,12 @@ class Place : SugarRecord{
     var lat : String? = null;
     var long : String? = null;
     var image : String? = null;
-    @Ignore
-    var schedules : MutableList<Schedule> = ArrayList()
 
     fun get_Schedules(): MutableList<Schedule> {
-        return find(Schedule::class.java,"id_Place = ?",this.id.toString())
+        return find(Schedule::class.java,"place= ?",this.id.toString())
+    }
+    fun get_Amenities(): MutableList<Amenities> {
+        return find(Amenities::class.java,"place= ?",this.id.toString())
     }
     constructor(){}
 

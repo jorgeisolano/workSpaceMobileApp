@@ -6,6 +6,9 @@ class Amenities : SugarRecord {
 
     var name : String? = null;
     var icon : String? = null;
+    lateinit var place: Place;
+
+    constructor(){}
 
     constructor(name: String?, icon: String?) {
         this.name = name
