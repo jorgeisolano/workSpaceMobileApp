@@ -1,5 +1,6 @@
 package co.edu.unicauca.aplimovil.workspaceapp
 
+import android.Manifest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.app.ActivityCompat
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
 import co.edu.unicauca.aplimovil.workspaceapp.models.Schedule
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppNavigation
@@ -26,6 +28,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+                    /*
                     val place = Place("Jorge", "asd", "asd", "asd", "asd", "asd", "asd")
                     val idPlace = place.save()
                     val schedule = Schedule(idPlace.toInt(), "Lunes", "YA", "Mañana")
@@ -36,12 +39,16 @@ class MainActivity : ComponentActivity() {
                     for(schedule in place.get_Schedules()){
                         println("aSD" + schedule.day)
                     }
+                    */
                     AppNavigation()
+
                 }
             }
         }
     }
+
 }
+
 
 
 @Preview(showBackground = true)
