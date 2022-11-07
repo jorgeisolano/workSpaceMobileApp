@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "76776827097",
+    "project_id": "workspaceapp-5023a",
+    "storage_bucket": "workspaceapp-5023a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:76776827097:android:70e0831e6da7ee1eeaf6c8",
+        "android_client_info": {
+          "package_name": "co.edu.unicauca.aplimovil.workspaceapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "76776827097-1hlgnpe7pf2eqvk8jvminkfbo88o6eu3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "co.edu.unicauca.aplimovil.workspaceapp",
+            "certificate_hash": "c30d1f3a63a90a312b168b5c689c8b47ec798792"
+          }
+        },
+        {
+          "client_id": "76776827097-v1fd8hlqv7obhou79hl2ah6klj36i881.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoUoW-qMS1ETVO0asVHrQZBy68Kh_ldjw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "76776827097-v1fd8hlqv7obhou79hl2ah6klj36i881.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
