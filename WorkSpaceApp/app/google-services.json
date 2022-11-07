@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "76776827097-1hlgnpe7pf2eqvk8jvminkfbo88o6eu3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "co.edu.unicauca.aplimovil.workspaceapp",
+            "certificate_hash": "c30d1f3a63a90a312b168b5c689c8b47ec798792"
+          }
+        },
+        {
           "client_id": "76776827097-v1fd8hlqv7obhou79hl2ah6klj36i881.apps.googleusercontent.com",
           "client_type": 3
         }

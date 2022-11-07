@@ -1,10 +1,17 @@
 package co.edu.unicauca.aplimovil.workspaceapp.screens
 
-import androidx.compose.foundation.background
+import android.app.Activity
+import android.app.Activity.RESULT_OK
+import android.app.AlertDialog
+import android.content.Intent
+import android.util.Log
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -19,10 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.graphics.Color.Companion.Gray
-import androidx.compose.ui.graphics.Color.Companion.Green
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
@@ -37,15 +43,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import co.edu.unicauca.aplimovil.workspaceapp.R
-import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 
 @Composable
 fun LoginScreen(navController: NavController){
-    val nav=navController
     Scaffold {
         LoginBodyContent(navController)
 
     }
+
 }
 
 @Composable
@@ -55,9 +65,8 @@ fun LoginBodyContent(navController: NavController?){
         .fillMaxSize(),
         contentAlignment = Alignment.Center){
         Column(){
-            loginBody()
-            Spacer(modifier = Modifier.size(50.dp))
-            LoginButton(navController)
+            loginBody(navController)
+
         }
 
     }
@@ -92,7 +101,7 @@ fun TopBar(navController: NavController?){
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun loginBody(){
+fun loginBody(navController: NavController?){
 
     Column(modifier = Modifier
         .padding(start = 15.dp, end = 15.dp),
@@ -107,6 +116,7 @@ fun loginBody(){
         var textCorreo by rememberSaveable(stateSaver = TextFieldValue.Saver) {
             mutableStateOf(TextFieldValue("", TextRange(0, 7)))
         }
+
         OutlinedTextField(
             value = textCorreo,
             onValueChange = { textCorreo = it },
@@ -145,20 +155,22 @@ fun loginBody(){
                 color = Color.Black
             )
         }
-
+        Spacer(modifier = Modifier.size(50.dp))
+        LoginButton(navController,textCorreo,textPassword)
     }
 
 }
 @Composable
-fun LoginButton(navController: NavController?){
+fun LoginButton(navController: NavController?,email:TextFieldValue,password: TextFieldValue){
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Button(onClick = { navController?.popBackStack() }, modifier = Modifier
+        val context = LocalContext.current
+        Button(onClick = { authEmailAndPassword(email.text,password.text,context as Activity,navController) }, modifier = Modifier
             .fillMaxWidth()
             .padding(start = 15.dp, end = 15.dp)
             .clip(RoundedCornerShape(30.dp)),
             colors=ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.login), contentColor = Color.White)
         ) {
-            Text(text = stringResource(id = R.string.loggin_buttom), fontSize = 20.sp, color=Color.White)
+            Text(text = stringResource(id = R.string.loggin_buttom), fontWeight = FontWeight.Bold,fontSize = 20.sp, color=Color.White)
         }
         Spacer(modifier = Modifier.size(25.dp))
         Text(
@@ -167,15 +179,90 @@ fun LoginButton(navController: NavController?){
             color = Color.Black
         )
         Spacer(modifier = Modifier.size(25.dp))
-        Button(onClick = { navController?.popBackStack() }, modifier = Modifier
+
+        val responseLauncher= rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            finalLogin(it,navController)
+        }
+        Button(onClick = { loginWithGoogle(context as Activity, responseLauncher) }, modifier = Modifier
             .fillMaxWidth()
             .padding(start = 15.dp, end = 15.dp)
             .clip(RoundedCornerShape(30.dp)),
             colors=ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.loginGoogle), contentColor = Color.White)
         ) {
-            Text(text = stringResource(id = R.string.google_button), fontSize = 20.sp, color=Color.White)
+            Icon(
+                painter = painterResource(id = R.drawable.googleicon),
+                contentDescription = "icono Google",
+                modifier= Modifier
+                    .size(31.dp)
+                    .padding(end = 5.dp)
+            )
+            Text(text = stringResource(id = R.string.google_button), fontSize = 20.sp, color=Color.White, fontWeight = FontWeight.Bold)
         }
     }
+}
+
+fun finalLogin(it: ActivityResult, navController:NavController?) {
+    if(it.resultCode==RESULT_OK){
+        val task=GoogleSignIn.getSignedInAccountFromIntent(it.data)
+        try {
+            val account=task.getResult(ApiException::class.java)
+            if(account!=null){
+                val credencial =GoogleAuthProvider.getCredential(account.idToken,null)
+                FirebaseAuth.getInstance().signInWithCredential(credencial).addOnCompleteListener {
+                    if(it.isSuccessful){
+                        Log.d("ACA","Se autentico ${account.email}")
+                        Log.d("ACA","Se autentico ${account.displayName}")
+                        Log.d("ACA","Se autentico ${account.photoUrl}")
+                        //navController?.popBackStack()
+                    }
+                }
+            }
+        }catch (e:ApiException){
+            Log.d("ACA","error ${e.message}")
+        }
+
+
+    }
+
+}
+
+fun authEmailAndPassword(email:String,password: String,activity: Activity,navController:NavController?, ){
+    if(email.isNotEmpty() && password.isNotEmpty()){
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email,password)
+            .addOnCompleteListener{
+                if(it.isSuccessful){
+                    Log.d("ACA","iNICIO ${it.result.user?.email}")
+                    showAlert(activity,"Bienvenido ${it.result.user?.email}","Estás de vuelta")
+
+                }else{
+                    showAlert(activity,"Se ha producido un error autenticando al usuario","Error")
+                }
+            }
+    }
+    navController?.popBackStack()
+}
+
+fun showAlert(activity:Activity,msg:String,title:String){
+    var bulder= AlertDialog.Builder(activity)
+    bulder.setTitle(title)
+    bulder.setMessage(msg)
+    bulder.setPositiveButton("Aceptar",null)
+    val dialog:AlertDialog=bulder.create()
+    dialog.show()
+}
+fun loginWithGoogle(
+    activity: Activity,
+    responseLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
+){
+    val googleConf=GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(activity.getString(R.string.default_web_client_id))
+        .requestEmail()
+        .requestProfile()
+        .build()
+    val googleClient=GoogleSignIn.getClient(activity,googleConf)
+    googleClient.signOut()
+    responseLauncher.launch(googleClient.signInIntent)
+
 }
 
 
