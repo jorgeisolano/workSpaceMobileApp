@@ -7,4 +7,8 @@
     <string name="reset_password">Reset Password</string>
     <string name="o_sigin_txt">Or sign in with</string>
     <string name="google_button">Google</string>
+    <string name="description_label">Description</string>
+    <string name="reservation_day_msg">If you wish to book several days please select the departure date.</string>
+    <string name="checkin_label">Check In</string>
+    <string name="checkout_label">Check Out (Optional)</string>
 </resources>

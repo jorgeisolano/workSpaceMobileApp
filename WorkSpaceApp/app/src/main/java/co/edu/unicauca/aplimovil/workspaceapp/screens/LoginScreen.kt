@@ -51,7 +51,9 @@ import com.google.firebase.auth.GoogleAuthProvider
 
 @Composable
 fun LoginScreen(navController: NavController){
-    Scaffold {
+    Scaffold (topBar = {
+        TopBar(navController,"¡Bienvenido!")
+    }){
         LoginBodyContent(navController)
 
     }
@@ -60,7 +62,6 @@ fun LoginScreen(navController: NavController){
 
 @Composable
 fun LoginBodyContent(navController: NavController?){
-    TopBar(navController)
     Box(modifier = Modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center){
@@ -78,11 +79,11 @@ fun PreviewContent(){
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(navController: NavController?){
+fun TopBar(navController: NavController?, title: String){
     CenterAlignedTopAppBar(
         title = {
             Text(
-                "¡Bienvenido!",
+                title,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = FontWeight.Bold, fontSize = 22.sp
@@ -127,7 +128,8 @@ fun loginBody(navController: NavController?){
             keyboardOptions= KeyboardOptions(keyboardType= KeyboardType.Email,imeAction=ImeAction.Next),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 15.dp, end = 15.dp)
+                .padding(start = 15.dp, end = 15.dp),
+            shape = ShapeDefaults.ExtraLarge
         )
         var textPassword by rememberSaveable(stateSaver = TextFieldValue.Saver) {
             mutableStateOf(TextFieldValue("", TextRange(0, 7)))
@@ -143,12 +145,13 @@ fun loginBody(navController: NavController?){
             keyboardOptions= KeyboardOptions(keyboardType= KeyboardType.Password,imeAction= ImeAction.Done),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 15.dp, end = 15.dp)
+                .padding(start = 15.dp, end = 15.dp),
+            shape = ShapeDefaults.ExtraLarge
         )
         Column(modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.End) {
             Text(modifier=Modifier
-                .padding(end = 15.dp),
+                .padding(end = 17.dp),
                 text=stringResource(id=R.string.reset_password),
                 fontSize = 20.sp,
                 textAlign= TextAlign.End,

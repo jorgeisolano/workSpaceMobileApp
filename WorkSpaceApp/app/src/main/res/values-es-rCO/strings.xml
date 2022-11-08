@@ -8,4 +8,8 @@
     <string name="reset_password">Recupear Contraseña</string>
     <string name="o_sigin_txt">O inica sesion con</string>
     <string name="google_button">Google</string>
+    <string name="description_label">Descripción</string>
+    <string name="reservation_day_msg">Si desea reservar varios días por favor seleccione la fecha de salida.</string>
+    <string name="checkin_label">Fecha Entrada</string>
+    <string name="checkout_label">Fecha Salida (Opcional)</string>
 </resources>
