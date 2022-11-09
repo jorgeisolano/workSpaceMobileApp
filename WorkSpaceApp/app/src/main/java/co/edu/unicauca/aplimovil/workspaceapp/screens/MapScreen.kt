@@ -1,9 +1,12 @@
 package co.edu.unicauca.aplimovil.workspaceapp.screens
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Location
 import android.location.LocationManager
+import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,9 +21,12 @@ import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.currentCompositionLocalContext
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,6 +39,17 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
+
+var latitud:Double=0.0
+var longitud:Double=0.0
 
 @Composable
 fun MapScreen(navController: NavController) {
@@ -76,31 +93,21 @@ fun MapBodyContent(navController: NavController?) {
         Text(
             text = "¡Encuentra espacios de trabajo cercanos!",
             modifier = Modifier.padding(top = 5.dp)
-        )/*
-        val marker = LatLng(4.6814882,-74.0457162)
-        val state = MarkerState(position = marker)
-        val camaraPositionState = rememberCameraPositionState{
-            position = CameraPosition.fromLatLngZoom(marker,15f)
-        }
-        GoogleMap(modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(top = 20.dp),
-            cameraPositionState=camaraPositionState){
-            Marker(state=state, title = "Marcador lugar")
-        }
-    */
+        )
         checkLocationPermissions()
+
+
     }
 }
 
+@SuppressLint("MissingPermission")
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun checkLocationPermissions() {
 
     val permissionStates = rememberMultiplePermissionsState(
         permissions = listOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
         )
     )
@@ -131,7 +138,17 @@ private fun checkLocationPermissions() {
             permissionStates.permissions.size ==
                     permissionStates.revokedPermissions.size
         if (!allPermissionsRevoked) {
-            Text("Permisos dados")
+            var location =rememberSaveable {
+                mutableStateOf(Location(null))
+            }
+            getLocation(onValueChange = {
+                location.value =it })
+            //Text("Permisos dados")
+            println(location.value.latitude)
+            println(location.value.longitude)
+            if(location.value.latitude!=0.0 && location.value.longitude!=0.0){
+                mapa(lat = location.value.latitude, long = location.value.latitude)
+            }
         } else if (permissionStates.shouldShowRationale) {
             Text(text = "Se necesita la ubicación exacta")
         } else {
@@ -141,6 +158,33 @@ private fun checkLocationPermissions() {
     }
 }
 
+@SuppressLint("MissingPermission")
+@Composable
+fun getLocation(onValueChange:(Location)->Unit){
+    var lat:Double=0.0
+    var long:Double=0.0
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(LocalContext.current)
+    fusedLocationClient.getCurrentLocation(PRIORITY_HIGH_ACCURACY,null).addOnSuccessListener {
+        onValueChange(it)
+    }
+
+}
+
+@Composable
+fun mapa(lat:Double,long:Double){
+    val marker = LatLng(lat, long)
+    val state = MarkerState(position = marker)
+    val camaraPositionState = rememberCameraPositionState{
+        position = CameraPosition.fromLatLngZoom(marker,15f)
+    }
+    GoogleMap(modifier = Modifier
+        .fillMaxWidth()
+        .fillMaxHeight()
+        .padding(top = 20.dp),
+        cameraPositionState=camaraPositionState){
+        Marker(state=state, title = "Te encuentras aquí")
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
