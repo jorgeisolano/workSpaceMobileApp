@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WorkSpaceApp</string>
+    <string name="email_or_phone_label">Correo o número de telefono</string>
+    <string name="password_label">Contraseña</string>
+    <string name="information_please_label">Por favor ingresa tu información aquí</string>
+    <string name="loggin_buttom">Iniciar Sesión</string>
+    <string name="reset_password">Recupear Contraseña</string>
+    <string name="o_sigin_txt">O inica sesion con</string>
+    <string name="google_button">Google</string>
+</resources>

@@ -1,8 +1,8 @@
 package co.edu.unicauca.aplimovil.workspaceapp
 
-import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
-import android.database.sqlite.SQLiteException
+
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -26,6 +26,7 @@ import java.util.Date
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             WorkSpaceAppTheme {
                 // A surface container using the 'background' color from the theme
@@ -43,6 +44,8 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+
 }
 
 fun loadData(): Long {
