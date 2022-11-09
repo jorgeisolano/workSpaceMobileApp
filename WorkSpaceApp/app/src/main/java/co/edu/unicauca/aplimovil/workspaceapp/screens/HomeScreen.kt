@@ -1,5 +1,6 @@
 package co.edu.unicauca.aplimovil.workspaceapp.screens
 
+import android.content.res.Resources.Theme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,6 +21,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -29,6 +31,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import co.edu.unicauca.aplimovil.workspaceapp.R
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisOscuro
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Verde
 import com.orm.SugarRecord
 
 private var placeList : MutableList<Place> = ArrayList()
@@ -117,7 +121,7 @@ fun cardPlace(place : Place){
         modifier = Modifier
             .fillMaxWidth()
             .height(270.dp)
-            .background(Color.Cyan))
+            .background(Verde))
         {
         Text(text = place.name.toString(), fontWeight = FontWeight.Bold, fontSize = 24.sp)
         Image(
@@ -137,7 +141,9 @@ fun cardPlace(place : Place){
 @Composable
 fun gridPlaces(placeList: MutableList<Place>){
     LazyVerticalGrid(
-        modifier = Modifier.fillMaxWidth().background(Color.LightGray),
+        modifier = Modifier
+            .fillMaxWidth()
+            ,
         columns = GridCells.Fixed(2),
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp),
