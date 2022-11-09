@@ -147,7 +147,7 @@ private fun checkLocationPermissions() {
             println(location.value.latitude)
             println(location.value.longitude)
             if(location.value.latitude!=0.0 && location.value.longitude!=0.0){
-                mapa(lat = location.value.latitude, long = location.value.latitude)
+                mapa(lat = location.value.latitude, long = location.value.longitude)
             }
         } else if (permissionStates.shouldShowRationale) {
             Text(text = "Se necesita la ubicación exacta")
@@ -172,17 +172,21 @@ fun getLocation(onValueChange:(Location)->Unit){
 
 @Composable
 fun mapa(lat:Double,long:Double){
-    val marker = LatLng(lat, long)
-    val state = MarkerState(position = marker)
-    val camaraPositionState = rememberCameraPositionState{
-        position = CameraPosition.fromLatLngZoom(marker,15f)
+    println("lat: " + lat)
+    println("Long:" + long)
+    val location = LatLng(lat,long)
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(location, 5f)
     }
-    GoogleMap(modifier = Modifier
-        .fillMaxWidth()
-        .fillMaxHeight()
-        .padding(top = 20.dp),
-        cameraPositionState=camaraPositionState){
-        Marker(state=state, title = "Te encuentras aquí")
+    GoogleMap(
+        modifier = Modifier.fillMaxSize(),
+        cameraPositionState = cameraPositionState
+    ) {
+        Marker(
+            state = MarkerState(position = location),
+            title = "Tu ubicación",
+            snippet = "Aqui te encuentras"
+        )
     }
 }
 
