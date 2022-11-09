@@ -10,7 +10,11 @@ class Booking : SugarRecord {
     var seats : Int? = null;
     var guest : Int? = null;
 
-    constructor(checkin: Date?, checkout: Date?, seats: Int?, guest: Int?) : super() {
+    lateinit var place: Place;
+
+    constructor(){}
+
+    constructor(checkin: Date?, checkout: Date?, seats: Int?, guest: Int?){
         this.checkin = checkin
         this.checkout = checkout
         this.seats = seats
