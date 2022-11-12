@@ -11,8 +11,8 @@ class Place : SugarRecord{
     var city : String? = null;
     var description : String? = null;
     var address : String? = null;
-    var lat : String? = null;
-    var long : String? = null;
+    var lat : Double? = null;
+    var long : Double? = null;
     var image : String? = null;
     @Ignore
     var schedules : MutableList<Schedule> = ArrayList()
@@ -23,8 +23,8 @@ class Place : SugarRecord{
     constructor(){}
 
     constructor(name : String,  city : String,
-                description : String,  address : String, lat : String,
-                long : String,  image : String)  {
+                description : String,  address : String, lat : Double,
+                long : Double,  image : String)  {
         this.name=name
         this.city=city
         this.description=description

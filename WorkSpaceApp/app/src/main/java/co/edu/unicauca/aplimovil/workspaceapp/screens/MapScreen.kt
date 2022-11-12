@@ -1,27 +1,16 @@
 package co.edu.unicauca.aplimovil.workspaceapp.screens
 
 import android.Manifest
-import android.annotation.SuppressLint
-import android.content.Context
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.location.Location
-import android.location.LocationManager
-import android.util.Log
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.currentCompositionLocalContext
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,24 +21,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.requestPermissions
+import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
+import co.edu.unicauca.aplimovil.workspaceapp.models.Place
+import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority.PRIORITY_BALANCED_POWER_ACCURACY
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMapOptions
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
-import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.android.gms.maps.model.Marker
+import com.google.maps.android.compose.*
 
-var latitud:Double=0.0
-var longitud:Double=0.0
+private var lati:Double=0.0
+private var longi:Double=0.0
 
 @Composable
 fun MapScreen(navController: NavController) {
@@ -94,17 +90,14 @@ fun MapBodyContent(navController: NavController?) {
             text = "¡Encuentra espacios de trabajo cercanos!",
             modifier = Modifier.padding(top = 5.dp)
         )
-        checkLocationPermissions()
-
-
+        checkLocationPermissions(navController)
     }
 }
 
-@SuppressLint("MissingPermission")
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-private fun checkLocationPermissions() {
-
+private fun checkLocationPermissions(navController: NavController?) {
+    val openDialog = remember { mutableStateOf(true) }
     val permissionStates = rememberMultiplePermissionsState(
         permissions = listOf(
             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -137,6 +130,7 @@ private fun checkLocationPermissions() {
         val allPermissionsRevoked =
             permissionStates.permissions.size ==
                     permissionStates.revokedPermissions.size
+        println(allPermissionsRevoked)
         if (!allPermissionsRevoked) {
             var location =rememberSaveable {
                 mutableStateOf(Location(null))
@@ -144,50 +138,125 @@ private fun checkLocationPermissions() {
             getLocation(onValueChange = {
                 location.value =it })
             //Text("Permisos dados")
-            println(location.value.latitude)
-            println(location.value.longitude)
             if(location.value.latitude!=0.0 && location.value.longitude!=0.0){
-                mapa(lat = location.value.latitude, long = location.value.longitude)
+
+                Mapa(lat = location.value.latitude, long = location.value.longitude,nearPlaces(location = location.value),navController!!)
             }
         } else if (permissionStates.shouldShowRationale) {
-            Text(text = "Se necesita la ubicación exacta")
-        } else {
+            dialogMessage(openDialog = openDialog, text = "Por favor cambia la configuracion de la ubicacion a una más exacta")
 
-            Text("La aplicacion necesita los permisos")
+        } else {
+            dialogMessage(openDialog = openDialog, text = "Por favor permite el uso de la ubicación desde la configuracion de tu dispositivo")
         }
     }
 }
 
-@SuppressLint("MissingPermission")
 @Composable
 fun getLocation(onValueChange:(Location)->Unit){
-    var lat:Double=0.0
-    var long:Double=0.0
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(LocalContext.current)
-    fusedLocationClient.getCurrentLocation(PRIORITY_HIGH_ACCURACY,null).addOnSuccessListener {
+    if (ActivityCompat.checkSelfPermission(
+            LocalContext.current,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+            LocalContext.current,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
+        ActivityCompat.requestPermissions(
+            (LocalContext.current as Activity?)!!,
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ),
+            101
+        )
+    }
+    fusedLocationClient.getCurrentLocation(PRIORITY_BALANCED_POWER_ACCURACY,null).addOnSuccessListener {
         onValueChange(it)
     }
 
 }
 
 @Composable
-fun mapa(lat:Double,long:Double){
-    println("lat: " + lat)
-    println("Long:" + long)
+fun Mapa(lat:Double,long:Double,nearPlaces:MutableList<Place>,navController: NavController){
+    lati=lat
+    longi=long
     val location = LatLng(lat,long)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(location, 5f)
+        position = CameraPosition.fromLatLngZoom(location, 15F)
     }
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState
     ) {
-        Marker(
-            state = MarkerState(position = location),
-            title = "Tu ubicación",
-            snippet = "Aqui te encuentras"
+       Marker(state=MarkerState(position = location),icon= BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN), title = "Te encuentras aquí")
+       nearPlaces.forEach { 
+           place ->
+           Marker(
+               state= MarkerState(position = LatLng(place.lat!!,place.long!!)),
+               title = place.name,
+               snippet = "Conocer más",
+               onInfoWindowClick = { navController.navigate(route = AppScreens.DetailScreen.route)}
+           )
+       }
+
+    }
+}
+
+@Composable
+fun dialogMessage(openDialog:MutableState<Boolean>,text:String){
+
+    if (openDialog.value) {
+        AlertDialog(
+            onDismissRequest = {
+                // Dismiss the dialog when the user clicks outside the dialog or on the back
+                // button. If you want to disable that functionality, simply use an empty
+                // onCloseRequest.
+                openDialog.value = false
+            },
+            title = {
+                Text(text = "Permisos de Ubicación")
+            },
+            text = {
+                Text(
+                    text
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                    }
+                ) {
+                    Text("Aceptar")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                    }
+                ) {
+                    Text("Cancelar")
+                }
+            }
         )
     }
+}
+
+fun nearPlaces(location:Location):MutableList<Place>{
+    var listPlaces :MutableList<Place> = mutableListOf()
+    var resPlaces :MutableList<Place> = mutableListOf()
+    listPlaces.add(Place("dasd","fsdf","fsdfsd","sdfs",2.4419417,-76.6092564,"fsd"))
+    for (item in listPlaces){
+        var loc = Location(null)
+        loc.latitude= item.lat!!
+        loc.longitude=item.long!!
+        if(location.distanceTo(loc)<10000.0){
+            resPlaces.add(item)
+        }
+    }
+    return resPlaces
 }
 
 @Preview(showBackground = true)
