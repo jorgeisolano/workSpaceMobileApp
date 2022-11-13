@@ -10,6 +10,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,12 +53,12 @@ fun loadData(): Long {
     //Creacion del lugar
     val place = Place(
         "Tinkko",
-        "Popayan",
-        "lugar de coworking",
-        "carrera 1 AE#8a-47",
-        "32423",
-        "234",
-        "image.jpg",
+        "Bogota",
+        "En Tinkko encontrarás un espacio moderno pero profesional, con una comunidad dispuesta a ayudarte y facilitar muchos procesos que de otra forma generarían gastos para ti.",
+        "Edificio Ecotek Cl. 99 #10-57 cerca del parque de la 93",
+        4.6814882,
+        -74.0457162,
+        "https://tinkko.com/wp-content/uploads/2021/04/SEDES_MILLA_DE_ORO.jpg",
         "Cerrado los sabados"
     )
     val idPlace = place.save()
@@ -72,10 +73,10 @@ fun loadData(): Long {
     schedule3.place = place
     schedule3.save()
     //Creacion de las comodidades
-    val amenitie = Amenities("Wifi", "icon")
+    val amenitie = Amenities("Wifi", R.drawable.ic_baseline_wifi_24)
     amenitie.place = place
     amenitie.save()
-    val amenitie2 = Amenities("Servicio de alimentación", "icon")
+    val amenitie2 = Amenities("Servicio de alimentación", R.drawable.ic_baseline_fastfood_24)
     amenitie2.place = place
     amenitie2.save()
     //Creación de un booking
