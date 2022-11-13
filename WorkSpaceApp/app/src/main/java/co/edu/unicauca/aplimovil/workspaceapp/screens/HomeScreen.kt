@@ -1,8 +1,10 @@
 package co.edu.unicauca.aplimovil.workspaceapp.screens
 
 import android.content.res.Resources.Theme
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -29,10 +31,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.navArgument
 import co.edu.unicauca.aplimovil.workspaceapp.R
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
+import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisOscuro
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Verde
+import com.google.gson.Gson
 import com.orm.SugarRecord
 
 private var placeList : MutableList<Place> = ArrayList()
@@ -115,13 +120,18 @@ fun categoriesSelector(){
 }
 
 @Composable
-fun cardPlace(place : Place){
+fun cardPlace(place : Place,navController: NavController){
+    val placeJson = Uri.encode(Gson().toJson(place))
     Column(
         verticalArrangement = Arrangement.spacedBy(15.dp),
         modifier = Modifier
             .fillMaxWidth()
             .height(270.dp)
-            .background(Verde))
+            .background(Verde)
+            .clickable(onClick = {
+                navController.navigate(AppScreens.DetailScreen.route+"/" + placeJson)
+                //navController.navigate(AppScreens.DetailScreen.route)
+            }))
         {
         Text(text = place.name.toString(), fontWeight = FontWeight.Bold, fontSize = 24.sp)
         Image(
@@ -139,7 +149,7 @@ fun cardPlace(place : Place){
 }
 
 @Composable
-fun gridPlaces(placeList: MutableList<Place>){
+fun gridPlaces(placeList: MutableList<Place>,navController: NavController){
     LazyVerticalGrid(
         modifier = Modifier
             .fillMaxWidth()
@@ -149,7 +159,7 @@ fun gridPlaces(placeList: MutableList<Place>){
         horizontalArrangement = Arrangement.spacedBy(20.dp),
         content = {
             items(placeList){
-                place -> cardPlace(place = place)
+                place -> cardPlace(place = place,navController)
             }
         }
     )
@@ -164,6 +174,6 @@ fun HomeBodyContent(navController: NavController, placeList: MutableList<Place>)
             .padding(20.dp, 5.dp)) {
         searchField()
         categoriesSelector()
-        gridPlaces(placeList = placeList)
+        gridPlaces(placeList = placeList,navController)
     }
 }
