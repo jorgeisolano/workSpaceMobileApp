@@ -133,7 +133,7 @@ private fun checkLocationPermissions(navController: NavController?) {
                   //Text("Permisos dados")
                   if(location.value.latitude!=0.0 && location.value.longitude!=0.0){
                       var placeList: MutableList<Place>
-                      placeList=listOf<Place>(Place("dasd","fsdf","fsdfsd","sdfs",2.4419417,-76.6092564,"fsd"),Place("","","","",2.4416987,-76.6060809,"")) as MutableList<Place>
+                      placeList=listOf<Place>(Place("dasd","fsdf","fsdfsd","sdfs",2.4419417,-76.6092564,"fsd",""),Place("","","","",2.4416987,-76.6060809,"","")) as MutableList<Place>
                       //placeList = nearPlaces(location = location.value,placeList)
                       Mapa(lat = location.value.latitude, long = location.value.longitude,placeList,navController!!)
                   }
@@ -263,7 +263,7 @@ fun dialogMessage(openDialog:MutableState<Boolean>,text:String,navController: Na
 
 fun nearPlaces(location:Location,listPlaces:MutableList<Place>):MutableList<Place>{
     var resPlaces :MutableList<Place> = mutableListOf()
-    listPlaces.add(Place("dasd","fsdf","fsdfsd","sdfs",2.4419417,-76.6092564,"fsd"))
+    listPlaces.add(Place("dasd","fsdf","fsdfsd","sdfs",2.4419417,-76.6092564,"fsd",""))
     for (item in listPlaces){
         var loc = Location(null)
         loc.latitude= item.lat!!
