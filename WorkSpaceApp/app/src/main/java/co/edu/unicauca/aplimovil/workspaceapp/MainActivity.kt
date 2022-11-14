@@ -1,8 +1,9 @@
 package co.edu.unicauca.aplimovil.workspaceapp
 
-
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -14,8 +15,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+
+import androidx.core.app.ActivityCompat
+
 import co.edu.unicauca.aplimovil.workspaceapp.models.Amenities
 import co.edu.unicauca.aplimovil.workspaceapp.models.Booking
+
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
 import co.edu.unicauca.aplimovil.workspaceapp.models.Schedule
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppNavigation
@@ -35,16 +40,20 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+
                     if (SugarRecord.count<Place>(Place::class.java, null, null) <= 0) {
                         val id = loadData()
                         buscar(id)
+
                     }
+
                     AppNavigation()
 
                 }
             }
         }
     }
+
 
 
 }
@@ -97,7 +106,9 @@ fun buscar(id: Long) {
     for (item in place.get_Bookings()) {
         println(item.checkin)
     }
+
 }
+
 
 
 @Preview(showBackground = true)
