@@ -17,9 +17,11 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -129,7 +131,7 @@ fun cardPlace(place : Place,navController: NavController){
             .height(270.dp)
             .background(Verde)
             .clickable(onClick = {
-                navController.navigate(AppScreens.DetailScreen.route+"/" + placeJson)
+                navController.navigate(AppScreens.DetailScreen.route + "/" + placeJson)
                 //navController.navigate(AppScreens.DetailScreen.route)
             }))
         {
@@ -175,5 +177,17 @@ fun HomeBodyContent(navController: NavController, placeList: MutableList<Place>)
         searchField()
         categoriesSelector()
         gridPlaces(placeList = placeList,navController)
+        MapFloatingButton(navController = navController)
     }
+}
+
+@Composable
+fun MapFloatingButton(navController: NavController){
+    Column() {
+        FloatingActionButton(onClick = { navController.navigate(AppScreens.MapScreen.route) },
+            modifier = Modifier.padding(start = 150.dp, top = 130.dp)) {
+            Icon(Icons.Filled.Place, contentDescription = "Mapa")
+        }
+    }
+
 }
