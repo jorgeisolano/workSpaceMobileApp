@@ -42,8 +42,8 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     if (SugarRecord.count<Place>(Place::class.java, null, null) <= 0) {
-                        val id = loadData()
-                        buscar(id)
+                        loadData()
+                        //buscar(id)
 
                     }
 
@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
 
 }
 
-fun loadData(): Long {
+fun loadData(){
     //Creacion del lugar
     val place = Place(
         "Tinkko",
@@ -92,7 +92,37 @@ fun loadData(): Long {
     val booking = Booking(Date(2022,11,1),Date(2022,11,1),3,3)
     booking.place=place
     booking.save()
-    return idPlace
+
+    //----------------------------------
+    //Creacion del lugar
+    val place2 = Place(
+        "El caracol",
+        "Popayan",
+        "¡Bienvenido a nuestro cafe! Este espacio luminoso y acogedor constituye la planta baja de nuestra casa en el centro de Popayán, renovada con mucho cariño.",
+        "Cl. 6 #2-31, Centro",
+        2.4410834,
+        -76.6029984,
+        "https://media-cdn.tripadvisor.com/media/photo-p/15/67/ac/b4/welcome-to-caracol-cafe.jpg",
+        "Cerrado los sabados"
+    )
+    place2.save()
+    //Creacion de los horarios
+    val schedulep2 = Schedule("Lunes", "8:00", "12:00")
+    schedulep2.place = place2
+    schedulep2.save()
+    val schedulep3 = Schedule("Martes", "8:00", "12:00")
+    schedulep3.place = place2
+    schedulep3.save()
+    val schedulep4 = Schedule("Miercoles", "8:00", "12:00")
+    schedulep4.place = place2
+    schedulep4.save()
+    //Creacion de las comodidades
+    val amenitiep2 = Amenities("Wifi", R.drawable.ic_baseline_wifi_24)
+    amenitiep2.place = place2
+    amenitiep2.save()
+    val amenitiep3 = Amenities("Servicio de alimentación", R.drawable.ic_baseline_fastfood_24)
+    amenitiep3.place = place2
+    amenitiep3.save()
 }
 
 fun buscar(id: Long) {

@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -35,7 +36,9 @@ import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.gson.Gson
 import com.google.maps.android.compose.*
+import com.orm.SugarRecord
 
 
 private var lati:Double=0.0
@@ -132,8 +135,7 @@ private fun checkLocationPermissions(navController: NavController?) {
                       location.value =it })
                   //Text("Permisos dados")
                   if(location.value.latitude!=0.0 && location.value.longitude!=0.0){
-                      var placeList: MutableList<Place>
-                      placeList=listOf<Place>(Place("dasd","fsdf","fsdfsd","sdfs",2.4419417,-76.6092564,"fsd",""),Place("","","","",2.4416987,-76.6060809,"","")) as MutableList<Place>
+                      var placeList = SugarRecord.listAll(Place::class.java)
                       //placeList = nearPlaces(location = location.value,placeList)
                       Mapa(lat = location.value.latitude, long = location.value.longitude,placeList,navController!!)
                   }
@@ -205,14 +207,20 @@ fun Mapa(lat:Double,long:Double,nearPlaces:MutableList<Place>,navController: Nav
         modifier = Modifier.fillMaxSize().padding(top=15.dp),
         cameraPositionState = cameraPositionState
     ) {
+        lateinit var placeJson:Any
        Marker(state=MarkerState(position = location),icon= BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN), title = "Te encuentras aquí")
        nearPlaces.forEach { 
            place ->
+
            Marker(
                state= MarkerState(position = LatLng(place.lat!!,place.long!!)),
                title = place.name,
                snippet = "Conocer más",
-               onInfoWindowClick = { navController.navigate(route = AppScreens.DetailScreen.route)}
+               onClick = { placeJson= Uri.encode(Gson().toJson(place)) ; false},
+               onInfoWindowClick = {
+
+                   navController.navigate(route = AppScreens.DetailScreen.route + "/" + placeJson)
+               }
            )
        }
     }
