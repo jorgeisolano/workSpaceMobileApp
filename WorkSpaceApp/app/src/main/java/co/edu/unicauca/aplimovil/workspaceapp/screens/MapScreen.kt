@@ -207,7 +207,7 @@ fun Mapa(lat:Double,long:Double,nearPlaces:MutableList<Place>,navController: Nav
         modifier = Modifier.fillMaxSize().padding(top=15.dp),
         cameraPositionState = cameraPositionState
     ) {
-        lateinit var placeJson:Any
+
        Marker(state=MarkerState(position = location),icon= BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN), title = "Te encuentras aquí")
        nearPlaces.forEach { 
            place ->
@@ -216,9 +216,9 @@ fun Mapa(lat:Double,long:Double,nearPlaces:MutableList<Place>,navController: Nav
                state= MarkerState(position = LatLng(place.lat!!,place.long!!)),
                title = place.name,
                snippet = "Conocer más",
-               onClick = { placeJson= Uri.encode(Gson().toJson(place)) ; false},
+               onClick = {   ; false},
                onInfoWindowClick = {
-
+                   var placeJson= Uri.encode(Gson().toJson(place))
                    navController.navigate(route = AppScreens.DetailScreen.route + "/" + placeJson)
                }
            )
