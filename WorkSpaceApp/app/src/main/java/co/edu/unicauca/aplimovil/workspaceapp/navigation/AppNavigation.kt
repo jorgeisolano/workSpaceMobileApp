@@ -3,6 +3,7 @@ package co.edu.unicauca.aplimovil.workspaceapp.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -14,8 +15,8 @@ import co.edu.unicauca.aplimovil.workspaceapp.screens.*
 import com.google.gson.Gson
 
 @Composable
-fun AppNavigation(){
-    val navController = rememberNavController()
+fun AppNavigation(navController : NavHostController){
+
     NavHost(navController = navController, startDestination = AppScreens.InitialScreen.route, builder ={
         composable(route=AppScreens.InitialScreen.route){
             InitialScreen(navController)
