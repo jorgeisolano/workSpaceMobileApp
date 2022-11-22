@@ -177,17 +177,6 @@ fun HomeBodyContent(navController: NavController, placeList: MutableList<Place>)
         searchField()
         categoriesSelector()
         gridPlaces(placeList = placeList,navController)
-        MapFloatingButton(navController = navController)
+        //MapFloatingButton(navController = navController)
     }
-}
-
-@Composable
-fun MapFloatingButton(navController: NavController){
-    Column() {
-        FloatingActionButton(onClick = { navController.navigate(AppScreens.MapScreen.route) },
-            modifier = Modifier.padding(start = 150.dp, top = 130.dp)) {
-            Icon(Icons.Filled.Place, contentDescription = "Mapa")
-        }
-    }
-
 }

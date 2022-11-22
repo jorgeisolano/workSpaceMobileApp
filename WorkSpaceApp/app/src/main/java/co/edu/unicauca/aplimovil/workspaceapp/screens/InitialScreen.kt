@@ -10,13 +10,10 @@ import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
 
 @Composable
 fun InitialScreen(navController:NavController){
-    Scaffold {
+    /*Scaffold {
         BodyContent(navController)
-    }
-}
+    }*/
 
-@Composable
-fun BodyContent(navController:NavController){
     Column(){
         Text(text = "Screen Inicial")
         Button(onClick = { navController.navigate(route=AppScreens.HomeScreen.route)}) {
@@ -24,4 +21,14 @@ fun BodyContent(navController:NavController){
         }
     }
 }
+
+//@Composable
+//fun BodyContent(navController:NavController){
+//    Column(){
+//        Text(text = "Screen Inicial")
+//        Button(onClick = { navController.navigate(route=AppScreens.HomeScreen.route)}) {
+//            Text(text = "Ir a Home")
+//        }
+//    }
+//}
 

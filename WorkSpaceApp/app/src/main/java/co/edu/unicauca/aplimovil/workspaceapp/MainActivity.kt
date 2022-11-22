@@ -9,14 +9,17 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 
 import androidx.core.app.ActivityCompat
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 import co.edu.unicauca.aplimovil.workspaceapp.models.Amenities
 import co.edu.unicauca.aplimovil.workspaceapp.models.Booking
@@ -24,6 +27,11 @@ import co.edu.unicauca.aplimovil.workspaceapp.models.Booking
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
 import co.edu.unicauca.aplimovil.workspaceapp.models.Schedule
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppNavigation
+import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
+import co.edu.unicauca.aplimovil.workspaceapp.screens.MapScreen
+import co.edu.unicauca.aplimovil.workspaceapp.screens.components.BottomNavigationBar
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Blanco
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Verde
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.WorkSpaceAppTheme
 import com.orm.*
 import com.orm.SugarRecord.count
@@ -34,28 +42,53 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            WorkSpaceAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-
-                    if (SugarRecord.count<Place>(Place::class.java, null, null) <= 0) {
-                        loadData()
-                        //buscar(id)
-
-                    }
-
-                    AppNavigation()
-
-                }
+//            WorkSpaceAppTheme {
+//                // A surface container using the 'background' color from the theme
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colors.background
+//                ) {
+//                }
+//            }
+            if (SugarRecord.count<Place>(Place::class.java, null, null) <= 0) {
+                loadData()
+                //buscar(id)
             }
+            MainScreen()
         }
     }
+}
 
+@Composable
+fun MainScreen(){
+    val navController = rememberNavController()
+    val navigationItems = listOf(
+        AppScreens.HomeScreen,
+        AppScreens.BookingsScreen,
+        //AppScreens.MapScreen,
+        AppScreens.FavoritesScreen,
+        AppScreens.ProfileScreen
+    )
+    Scaffold(
+        bottomBar = { BottomNavigationBar(navController = navController, items = navigationItems as List<AppScreens>)},
+        floatingActionButton =  { MapFloatingButton(navController = navController)},
+        floatingActionButtonPosition = FabPosition.End
 
+    ) {
+        AppNavigation(navController = navController)
+    }
+}
 
+@Composable
+fun MapFloatingButton(navController: NavController){
+    ExtendedFloatingActionButton(
+        contentColor = Blanco,
+        backgroundColor = Verde,
+        onClick = { navController.navigate(AppScreens.MapScreen.route) },
+        icon = {Icon(Icons.Filled.Place, contentDescription = "Mapa")},
+        text = { Text(text = "Mapa") },
+        elevation = FloatingActionButtonDefaults.elevation(4.dp),
+        )
 }
 
 fun loadData(){
@@ -141,10 +174,10 @@ fun buscar(id: Long) {
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    WorkSpaceAppTheme {
-        AppNavigation()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview() {
+//    WorkSpaceAppTheme {
+//        MainScreen()
+//    }
+//}
