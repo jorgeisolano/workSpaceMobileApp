@@ -9,15 +9,16 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 
 import androidx.core.app.ActivityCompat
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
 import co.edu.unicauca.aplimovil.workspaceapp.models.Amenities
@@ -29,6 +30,8 @@ import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppNavigation
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
 import co.edu.unicauca.aplimovil.workspaceapp.screens.MapScreen
 import co.edu.unicauca.aplimovil.workspaceapp.screens.components.BottomNavigationBar
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Blanco
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Verde
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.WorkSpaceAppTheme
 import com.orm.*
 import com.orm.SugarRecord.count
@@ -61,13 +64,31 @@ fun MainScreen(){
     val navController = rememberNavController()
     val navigationItems = listOf(
         AppScreens.HomeScreen,
-        AppScreens.MapScreen,
+        AppScreens.BookingsScreen,
+        //AppScreens.MapScreen,
+        AppScreens.FavoritesScreen,
+        AppScreens.ProfileScreen
     )
     Scaffold(
-      bottomBar = { BottomNavigationBar(navController = navController, items = navigationItems )}
+        bottomBar = { BottomNavigationBar(navController = navController, items = navigationItems as List<AppScreens>)},
+        floatingActionButton =  { MapFloatingButton(navController = navController)},
+        floatingActionButtonPosition = FabPosition.End
+
     ) {
         AppNavigation(navController = navController)
     }
+}
+
+@Composable
+fun MapFloatingButton(navController: NavController){
+    ExtendedFloatingActionButton(
+        contentColor = Blanco,
+        backgroundColor = Verde,
+        onClick = { navController.navigate(AppScreens.MapScreen.route) },
+        icon = {Icon(Icons.Filled.Place, contentDescription = "Mapa")},
+        text = { Text(text = "Mapa") },
+        elevation = FloatingActionButtonDefaults.elevation(4.dp),
+        )
 }
 
 fun loadData(){

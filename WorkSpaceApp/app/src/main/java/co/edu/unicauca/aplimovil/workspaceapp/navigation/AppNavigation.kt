@@ -42,5 +42,14 @@ fun AppNavigation(navController : NavHostController){
         composable(route = AppScreens.LoginScreen.route){
             LoginScreen(navController)
         }
+        composable(route=AppScreens.BookingsScreen.route){
+            BookingsScreen(navController)
+        }
+        composable(route=AppScreens.FavoritesScreen.route){
+            FavoritesScreen(navController)
+        }
+        composable(route=AppScreens.ProfileScreen.route){
+            ProfileScreen(navController)
+        }
     } )
 }

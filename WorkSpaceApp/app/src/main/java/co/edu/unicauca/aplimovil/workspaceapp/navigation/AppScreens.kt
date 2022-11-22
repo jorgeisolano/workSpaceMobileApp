@@ -1,9 +1,7 @@
 package co.edu.unicauca.aplimovil.workspaceapp.navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class AppScreens(
@@ -17,5 +15,7 @@ sealed class AppScreens(
     object ReservationScreen : AppScreens("reservation_screen","asd",Icons.Filled.Lock)
     object MapScreen : AppScreens("map_screen","Mapa",Icons.Filled.Place)
     object LoginScreen : AppScreens("login_screen","asd",Icons.Filled.Lock)
-
+    object BookingsScreen : AppScreens("bookings_screen","Reservas",Icons.Filled.Check)
+    object FavoritesScreen : AppScreens("favorites_screen","Favoritos",Icons.Filled.Favorite)
+    object ProfileScreen : AppScreens("profile_screen","Perfil",Icons.Filled.Person)
 }
