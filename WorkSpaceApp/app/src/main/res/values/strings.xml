@@ -11,4 +11,9 @@
     <string name="reservation_day_msg">If you wish to book several days please select the departure date.</string>
     <string name="checkin_label">Check In</string>
     <string name="checkout_label">Check Out (Optional)</string>
+    <string name="select_time_label">Select time</string>
+    <string name="shair_label">Shairs</string>
+    <string name="guests_label">Guests</string>
+    <string name="cancel_label">Cancel</string>
+    <string name="reserve_label">Reserve</string>
 </resources>
