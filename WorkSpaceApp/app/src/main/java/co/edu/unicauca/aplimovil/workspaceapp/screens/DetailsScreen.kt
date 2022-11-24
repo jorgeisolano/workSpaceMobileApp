@@ -1,5 +1,6 @@
 package co.edu.unicauca.aplimovil.workspaceapp.screens
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -34,6 +35,7 @@ import coil.request.ImageRequest
 import coil.size.Size
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.gson.Gson
 import com.google.maps.android.compose.*
 
 @Composable
@@ -48,7 +50,7 @@ fun DetailScreen(navController: NavController, place: Place?){
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 CardPhoto(objPlace.image!!,objPlace.city!!)
                 PlaceDescription(objPlace)
-                ReservationButton(navController)
+                ReservationButton(objPlace,navController)
             }
 
         }
@@ -195,8 +197,9 @@ fun Mymap(latitude:Double,longitude:Double,placeName: String){
 }
 
 @Composable
-fun ReservationButton(navController: NavController?){
-    Button(onClick = { navController?.navigate(AppScreens.ReservationScreen.route) },
+fun ReservationButton(place : Place?,navController: NavController?){
+    val placeJson = Uri.encode(Gson().toJson(place))
+    Button(onClick = { navController?.navigate(AppScreens.ReservationScreen.route+"/"+placeJson) },
            colors = ButtonDefaults.buttonColors(backgroundColor = Verde, contentColor = Color.White),
            modifier = Modifier
         .fillMaxWidth()
@@ -223,7 +226,7 @@ fun DefaultPreviewDetails() {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 CardPhoto("https://tinkko.com/wp-content/uploads/2021/04/SEDES_MILLA_DE_ORO.jpg","Popayan")
                 PlaceDescription(Place("","","","",23.5,23.5,"",""))
-                ReservationButton(null)
+                ReservationButton(null,null)
             }
         }
 

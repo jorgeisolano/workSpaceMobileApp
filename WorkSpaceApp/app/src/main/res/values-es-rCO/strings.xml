@@ -17,4 +17,7 @@
     <string name="guests_label">Invitados</string>
     <string name="cancel_label">Cancelar</string>
     <string name="reserve_label">Reservar</string>
+    <string name="profile_label">Perfil</string>
+    <string name="logout_button">Cerrar Sesion</string>
+    <string name="no_authenticated_label">Aún no te has autenticado. Inicia sesión por favor</string>
 </resources>

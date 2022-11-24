@@ -16,4 +16,7 @@
     <string name="guests_label">Guests</string>
     <string name="cancel_label">Cancel</string>
     <string name="reserve_label">Reserve</string>
+    <string name="profile_label">Profile</string>
+    <string name="logout_button">LogOut</string>
+    <string name="no_authenticated_label">You have not yet authenticated yourself. Please log in</string>
 </resources>

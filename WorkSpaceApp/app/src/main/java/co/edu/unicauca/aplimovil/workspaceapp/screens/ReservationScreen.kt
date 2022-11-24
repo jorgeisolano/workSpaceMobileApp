@@ -36,28 +36,34 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import co.edu.unicauca.aplimovil.workspaceapp.R
-import co.edu.unicauca.aplimovil.workspaceapp.models.Sesion
+import co.edu.unicauca.aplimovil.workspaceapp.models.Booking
+import co.edu.unicauca.aplimovil.workspaceapp.models.Place
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
 import com.google.firebase.auth.FirebaseAuth
 import com.orm.SugarRecord
+import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ReservationScreen(navController: NavController){
-    ReservationBodyContent(navController)
+fun ReservationScreen(navController: NavController, place: Place?){
+    lateinit var objPlace:Place
+    place?.let {
+        objPlace = it
+    }
+    ReservationBodyContent(navController,objPlace)
 
 }
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun Preview(){
-    ReservationBodyContent(null)
+    ReservationBodyContent(null,null)
 }
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ReservationBodyContent(navController: NavController?){
+fun ReservationBodyContent(navController: NavController?,place: Place?){
     Scaffold (
         topBar = { TopBar(navController = navController, title = "Tinkko")}
     ){
@@ -91,7 +97,8 @@ fun ReservationBodyContent(navController: NavController?){
                     Spacer(modifier = Modifier.size(10.dp) )
                     val (numShairsIn ,numShairsOut) = rememberSaveable {mutableStateOf(value=0) }
                     selectorNumerico(numShairsIn,numShairsOut)
-
+                    Spacer(modifier = Modifier.size(10.dp) )
+                    ButtonCancelar(navController)
                 }
                 Spacer(modifier = Modifier.size(10.dp) )
                 Column(modifier = Modifier.width(((width-60)/2).dp)) {
@@ -103,19 +110,19 @@ fun ReservationBodyContent(navController: NavController?){
                     Spacer(modifier = Modifier.size(10.dp) )
                     val (numGuestIn ,numGuestOut) = rememberSaveable {mutableStateOf(value=0) }
                     selectorNumerico(numGuestIn,numGuestOut)
+                    Spacer(modifier = Modifier.size(10.dp) )
+                    var booking=Booking()
+                    booking.place=place!!
+                    //Falta Llenar el objeto
+                    var date:Date=Date.from(Instant.parse(valueIn))
+                    ButtonReservar(navController, booking)
                 }
-
-
-
-
             }
 
             Button(onClick = { navController?.navigate(route= AppScreens.LoginScreen.route)}) {
                 Text(text = "Ir a Login")
             }
-            Button(onClick = {  }) {
-                Text(text = "Log Out")
-            }
+
         }
     }
 
@@ -186,17 +193,33 @@ fun DatePiker(value:String,onValueChange:(String)->Unit) {
     }
 
 }
-@Composable
-fun ButtonCancelar(){
-    val context = LocalContext.current
-    Button(onClick = {  }, modifier = Modifier
-        .fillMaxWidth()
-        .padding(start = 15.dp, end = 15.dp)
-        .clip(RoundedCornerShape(30.dp)),
-        colors=ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.login), contentColor = Color.White)
-    ) {
-        Text(text = stringResource(id = R.string.loggin_buttom), fontWeight = FontWeight.Bold,fontSize = 20.sp, color=Color.White)
+fun reservar(navController: NavController?,booking: Booking){
+    if(FirebaseAuth.getInstance().currentUser?.email!=null){
+
+    }else{
+        navController?.navigate(route= AppScreens.LoginScreen.route)
     }
+}
+@Composable
+fun ButtonReservar(navController: NavController?,booking: Booking){
+        Button(onClick = { reservar(navController,booking ) }, modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(30.dp)),
+            colors=ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.loginGoogle), contentColor = Color.White)
+        ) {
+
+            Text(text = stringResource(id = R.string.reserve_label), fontSize = 20.sp, color=Color.White, fontWeight = FontWeight.Bold)
+        }
+}
+@Composable
+fun ButtonCancelar(navController: NavController?){
+        Button(onClick = { navController?.popBackStack() }, modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(30.dp)),
+            colors=ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.login), contentColor = Color.White)
+        ) {
+            Text(text = stringResource(id = R.string.cancel_label), fontWeight = FontWeight.Bold,fontSize = 20.sp, color=Color.White)
+        }
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -231,10 +254,3 @@ fun TextGray(text:String){
     )
 }
 
-fun LogOut(){
-    var sesion:List<Sesion> = SugarRecord.find(Sesion::class.java,"email = ?",FirebaseAuth.getInstance().currentUser?.email)
-    if(sesion.isNotEmpty()) {
-        sesion[0].delete()
-    }
-    FirebaseAuth.getInstance().signOut()
-}
