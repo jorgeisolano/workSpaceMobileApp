@@ -107,7 +107,7 @@ fun profileInfo(sesion:Sesion?){
         Subtitles(texto = sesion?.name!!)
     }
     Spacer(modifier = Modifier.size(10.dp) )
-    Subtitles(texto = "juancamm@unicauca.edu.co")
+    sesion?.email?.let { Subtitles(texto = it) }
     Spacer(modifier = Modifier.size(30.dp) )
 }
 fun LogOut(navController: NavController?){

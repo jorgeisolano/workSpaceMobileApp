@@ -88,6 +88,7 @@ fun ReservationBodyContent(navController: NavController?,place: Place?){
             Row(modifier = Modifier.fillMaxWidth()) {
                 val context= LocalContext.current
                 val width: Int = context.resources.configuration.screenWidthDp
+                val (numShairsIn ,numShairsOut) = rememberSaveable {mutableStateOf(value=0) }
                 Column(modifier = Modifier.width(((width-60)/2).dp)) {
                     Subtitles(texto = "Hora Entrada")
                     Spacer(modifier = Modifier.size(10.dp) )
@@ -95,7 +96,6 @@ fun ReservationBodyContent(navController: NavController?,place: Place?){
                     Spacer(modifier = Modifier.size(10.dp) )
                     Subtitles(texto = stringResource(id = R.string.shair_label))
                     Spacer(modifier = Modifier.size(10.dp) )
-                    val (numShairsIn ,numShairsOut) = rememberSaveable {mutableStateOf(value=0) }
                     selectorNumerico(numShairsIn,numShairsOut)
                     Spacer(modifier = Modifier.size(10.dp) )
                     ButtonCancelar(navController)
@@ -113,7 +113,12 @@ fun ReservationBodyContent(navController: NavController?,place: Place?){
                     Spacer(modifier = Modifier.size(10.dp) )
                     var booking=Booking()
                     booking.place=place!!
-                    //Falta Llenar el objeto
+                    booking.checkin=valueIn
+                    booking.checkout=valueOut
+                    booking.timeCheckin=timeValueIn
+                    booking.timeCheckout=timeValueOut
+                    booking.guest=numGuestIn
+                    booking.seats=numShairsIn
                     var date:Date=Date.from(Instant.parse(valueIn))
                     ButtonReservar(navController, booking)
                 }
@@ -195,7 +200,7 @@ fun DatePiker(value:String,onValueChange:(String)->Unit) {
 }
 fun reservar(navController: NavController?,booking: Booking){
     if(FirebaseAuth.getInstance().currentUser?.email!=null){
-
+        booking.save()
     }else{
         navController?.navigate(route= AppScreens.LoginScreen.route)
     }
