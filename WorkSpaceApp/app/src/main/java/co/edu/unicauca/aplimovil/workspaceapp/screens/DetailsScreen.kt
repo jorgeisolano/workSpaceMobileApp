@@ -89,12 +89,7 @@ fun CardPhoto(imageUrl:String,city:String){
         .paddingFromBaseline(120.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally) {
-        val painter = rememberAsyncImagePainter(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUrl)
-                .size(Size.ORIGINAL)
-                .build()
-        )
+        val painter = rememberAsyncImagePainter(model = ImageRequest.Builder(LocalContext.current).data(imageUrl).size(Size.ORIGINAL).build())
         /*
         if (painter.state is AsyncImagePainter.State.Loading || painter.state is AsyncImagePainter.State.Error) {
             CircularProgressIndicator(color =Verde)
@@ -103,13 +98,13 @@ fun CardPhoto(imageUrl:String,city:String){
        //if (painter.state is AsyncImagePainter.State.Success) {
             // This will be executed during the first composition if the image is in the memory cache.
 
-            Image(
-                painter = painter,
-                contentDescription ="Imagen del coworking",
-                modifier = Modifier
-                    .clip(RoundedCornerShape(35.dp))
-                    .aspectRatio(15f / 9f, false)
-            )
+        Image(
+            painter = painter,
+            contentDescription ="Imagen del coworking",
+            modifier = Modifier
+                .clip(RoundedCornerShape(35.dp))
+                .aspectRatio(15f / 9f, false)
+        )
         //}
 
 
