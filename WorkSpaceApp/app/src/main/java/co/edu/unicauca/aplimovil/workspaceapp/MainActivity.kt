@@ -71,14 +71,17 @@ fun MainScreen() {
                     items = navigationItems as List<AppScreens>)
             }
         },
-        floatingActionButton = { MapFloatingButton(navController = navController) },
+        floatingActionButton = {
+            if(currentRoute(navController) == "home_screen"){
+                MapFloatingButton(navController = navController)
+            }
+        },
         floatingActionButtonPosition = FabPosition.End,
         scaffoldState = scaffoldState
 
     ) {
-        Column(modifier = Modifier.padding(bottom = 58.dp)) {
-            AppNavigation(navController)
-        }
+        AppNavigation(navController)
+        
     }
 }
 
