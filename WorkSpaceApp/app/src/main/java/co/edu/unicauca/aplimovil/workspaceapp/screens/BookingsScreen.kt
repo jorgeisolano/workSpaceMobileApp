@@ -12,9 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -26,20 +24,25 @@ import androidx.navigation.NavController
 import co.edu.unicauca.aplimovil.workspaceapp.models.Booking
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisClaro
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisOscuro
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.WorkSpaceAppTheme
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
+import com.orm.SugarRecord.find
 import java.util.*
+
 
 @Composable
 fun BookingsScreen(navController: NavController) {
+    var bookingList = find(Booking::class.java, "USER_EMAIL = ?", "laura@unicauca.edu.co")
+
     WorkSpaceAppTheme {
         Scaffold(
             topBar = { BookingsTopBar(navController = navController) }
         ) {
             Column() {
-                BookingBodyContent()
+                BookingBodyContent(bookingList)
             }
         }
 
@@ -68,29 +71,18 @@ fun BookingsTopBar(navController: NavController?) {
 }
 
 @Composable
-fun BookingBodyContent() {
+fun BookingBodyContent(bookingList: List<Booking>) {
     InitialText()
-    var place = Place("Lugaer sdf",
-        "Popayan",
-        "fsdfsdfs",
-        "Cl. 85 #22A - 39",
-        23.2,
-        45.0,
-        "https://tinkko.com/wp-content/uploads/2021/04/SEDES_MILLA_DE_ORO.jpg",
-        "ciera")
-
-    var listBooking: List<Booking> =
-        listOf(Booking(Date(), Date(), 2, 2), Booking(Date(), Date(), 1, 1))
-    BookingList(place, bookingList = listBooking)
+    BookingList(bookingList = bookingList)
 }
 
 @Composable
-fun BookingList(place: Place, bookingList: List<Booking>) {
-    LazyColumn(modifier = Modifier
-        .fillMaxSize()
-        .paddingFromBaseline(top = 100.dp)) {
+fun BookingList( bookingList: List<Booking>) {
+  LazyColumn(modifier = Modifier
+      .fillMaxSize()
+      .paddingFromBaseline(top = 40.dp)) {
         items(bookingList) { placeBooking ->
-            bookingCards(place, placeBooking)
+            bookingCards(placeBooking.place, placeBooking)
         }
     }
 }
@@ -98,25 +90,27 @@ fun BookingList(place: Place, bookingList: List<Booking>) {
 @Composable
 fun InitialText() {
     Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(15.dp),
+        .fillMaxWidth()
+        .padding(start = 30.dp, end = 30.dp, top = 15.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = "A continuación podrás observar los espacios donde tienes reservas activas",
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,fontSize = 19.sp, color = GrisOscuro
         )
     }
 }
 
 @Composable
 fun bookingCards(place: Place, booking: Booking) {
+    println("size´" +place.name)
     val painter =
         rememberAsyncImagePainter(model = ImageRequest.Builder(LocalContext.current)
             .data(place.image).size(
                 Size.ORIGINAL).build())
 
-    Column(modifier = Modifier.padding(top = 10.dp)
+    Column(modifier = Modifier
+        .padding(top = 10.dp)
         .padding(start = 15.dp, end = 15.dp),
         horizontalAlignment = Alignment.Start) {
         Text(text = place.name.toString(),
@@ -138,14 +132,14 @@ fun bookingCards(place: Place, booking: Booking) {
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(start = 20.dp))
                 Text(text = place.city.toString() + " - " + " Colombia " + place.address.toString(),
-                    modifier = Modifier.padding(start = 20.dp),fontSize = 15.sp)
+                    modifier = Modifier.padding(start = 20.dp),fontSize = 13.sp)
                 Text(text = "Información de reserva",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(start = 20.dp))
-                Text(text = "Sep. 06 - 2022 · 8:00 AM - 11:00 AM",
-                    modifier = Modifier.padding(start = 20.dp),fontSize = 15.sp)
+                Text(text = booking.checkin.toString() + " - " +booking.checkout.toString(),
+                    modifier = Modifier.padding(start = 20.dp),fontSize = 13.sp)
                 Text(text = booking.guest.toString() + " invitados",
-                    modifier = Modifier.padding(start = 20.dp),fontSize = 15.sp)
+                    modifier = Modifier.padding(start = 20.dp),fontSize = 13.sp)
             }
 
         }
@@ -153,7 +147,8 @@ fun bookingCards(place: Place, booking: Booking) {
 
     }
     Divider(color = GrisClaro, modifier = Modifier
-        .fillMaxWidth().padding(top=20.dp)
+        .fillMaxWidth()
+        .padding(top = 20.dp)
         .height(5.dp))
 
 }
@@ -165,7 +160,7 @@ fun DefaultPreviewBookings() {
         Scaffold(
             topBar = { BookingsTopBar(navController = null) }
         ) {
-            BookingBodyContent()
+            BookingBodyContent(listOf())
 
         }
 
