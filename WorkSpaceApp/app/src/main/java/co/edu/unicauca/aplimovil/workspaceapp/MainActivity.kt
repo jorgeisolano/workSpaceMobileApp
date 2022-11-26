@@ -123,7 +123,7 @@ fun loadData() {
     amenitie2.save()
     //Creación de un booking
     val booking = Booking("10-10-2022","10-10-2022","10:00","11:00",3,3)
-    booking.userEmail="laura@unicauca.edu.co"
+    booking.userEmail="lauraich@unicauca.edu.co"
     booking.place=place
 
     booking.save()
@@ -161,7 +161,7 @@ fun loadData() {
 
     //Creación de un booking
     val booking2 = Booking("11-10-2022","11-10-2022","10:00","11:00",3,3)
-    booking2.userEmail="laura@unicauca.edu.co"
+    booking2.userEmail="lauraich@unicauca.edu.co"
     booking2.place=place2
     booking2.save()
 
