@@ -38,15 +38,29 @@ import java.util.*
 
 @Composable
 fun BookingsScreen(navController: NavController) {
-
-    var bookingList = find(Booking::class.java, "USER_EMAIL = ?", "laura@unicauca.edu.co")
-
+    var email=FirebaseAuth.getInstance().currentUser?.email
+    var bookingList= listOf<Booking>()
+    if(email!=null){
+        bookingList = find(Booking::class.java, "USER_EMAIL = ?", email.toString())
+    }
     WorkSpaceAppTheme {
         Scaffold(
             topBar = { BookingsTopBar(navController = navController) }
         ) {
             Column() {
-                BookingBodyContent(bookingList)
+                if(bookingList.isEmpty()){
+                    Column(modifier = Modifier
+                        .fillMaxWidth(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "Aqui podrás observar tus reservaciones realizadas",
+                            textAlign = TextAlign.Center,fontSize = 19.sp
+                        )
+                    }
+                }else{
+                    BookingBodyContent(bookingList)
+                }
             }
         }
 
@@ -135,12 +149,16 @@ fun bookingCards(place: Place, booking: Booking) {
                 Text(text = "Ubicación",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(start = 20.dp))
-                Text(text = place.city.toString() + " - " + " Colombia " + place.address.toString(),
+                Text(text = place.city.toString() + " - " + " Colombia - " + place.address.toString(),
                     modifier = Modifier.padding(start = 20.dp),fontSize = 13.sp)
                 Text(text = "Información de reserva",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(start = 20.dp))
-                Text(text = booking.checkin.toString() + " - " +booking.checkout.toString(),
+                Text(text = "Fecha Entrada: " + booking.checkin.toString(),
+                    modifier = Modifier.padding(start = 20.dp),fontSize = 13.sp)
+                Text(text = "Fecha Salida: " +booking.checkout.toString(),
+                    modifier = Modifier.padding(start = 20.dp),fontSize = 13.sp)
+                Text(text ="Entrada: " + booking.timeCheckin.toString() + " - " + "Salida: "+ booking.timeCheckout.toString(),
                     modifier = Modifier.padding(start = 20.dp),fontSize = 13.sp)
                 Text(text = booking.guest.toString() + " invitados",
                     modifier = Modifier.padding(start = 20.dp),fontSize = 13.sp)
