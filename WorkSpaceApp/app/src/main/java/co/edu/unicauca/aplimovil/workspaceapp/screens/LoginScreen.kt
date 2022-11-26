@@ -44,6 +44,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import co.edu.unicauca.aplimovil.workspaceapp.R
 import co.edu.unicauca.aplimovil.workspaceapp.models.Sesion
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import coil.transform.CircleCropTransformation
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -65,8 +68,8 @@ fun LoginScreen(navController: NavController){
 @Composable
 fun LoginBodyContent(navController: NavController?){
     Box(modifier = Modifier
-        .fillMaxSize(),
-        contentAlignment = Alignment.Center){
+        .fillMaxSize()
+        ){
 
             loginBody(navController)
 
@@ -109,12 +112,23 @@ fun loginBody(navController: NavController?){
         .padding(start = 15.dp, end = 15.dp),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally) {
+        Box( modifier = Modifier
+            .height(300.dp)
+            .fillMaxWidth(),
+            contentAlignment = Alignment.Center) {
+            AsyncImage(model = ImageRequest.Builder(LocalContext.current)
+                .data(R.drawable.workspace)
+                .build(),
+                modifier = Modifier.fillMaxSize(),
+                contentDescription = "Profile")
+        }
+
         Text(
             stringResource(id=R.string.information_please_label),
             fontSize = 20.sp,
             color = Color.Gray
         )
-        Spacer(modifier = Modifier.size(50.dp))
+        Spacer(modifier = Modifier.size(30.dp))
         var textCorreo by rememberSaveable(stateSaver = TextFieldValue.Saver) {
             mutableStateOf(TextFieldValue("", TextRange(0, 7)))
         }

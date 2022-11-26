@@ -19,4 +19,7 @@
     <string name="profile_label">Profile</string>
     <string name="logout_button">LogOut</string>
     <string name="no_authenticated_label">You have not yet authenticated yourself. Please log in</string>
+    <string name="ideal_place_label">Find the ideal place!</string>
+    <string name="discover_label">Discover the best places to work</string>
+    <string name="start_button">Start</string>
 </resources>

@@ -42,7 +42,6 @@ class MainActivity : ComponentActivity() {
 //            }
             if (SugarRecord.count<Place>(Place::class.java, null, null) <= 0) {
                 loadData()
-                //buscar(id)
             }
             MainScreen()
         }
