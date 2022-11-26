@@ -12,6 +12,7 @@ class Booking : SugarRecord {
     var seats : Int? = null;
     var guest : Int? = null;
 
+    lateinit var userEmail:String;
     lateinit var place: Place;
 
     constructor(){}
