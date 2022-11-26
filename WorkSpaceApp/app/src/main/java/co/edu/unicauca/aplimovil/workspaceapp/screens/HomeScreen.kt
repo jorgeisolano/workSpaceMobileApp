@@ -129,7 +129,6 @@ fun cardPlace(place : Place,navController: NavController){
         modifier = Modifier
             .fillMaxWidth()
             .height(270.dp)
-            .background(Verde)
             .clickable(onClick = {
                 navController.navigate(AppScreens.DetailScreen.route + "/" + placeJson)
                 //navController.navigate(AppScreens.DetailScreen.route)
