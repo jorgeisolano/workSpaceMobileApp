@@ -20,4 +20,7 @@
     <string name="profile_label">Perfil</string>
     <string name="logout_button">Cerrar Sesion</string>
     <string name="no_authenticated_label">Aún no te has autenticado. Inicia sesión por favor</string>
+    <string name="ideal_place_label">¡Encuentra el lugar ideal!</string>
+    <string name="discover_label">Descubre los mejores lugares para trabajar</string>
+    <string name="start_button">Iniciar</string>
 </resources>
