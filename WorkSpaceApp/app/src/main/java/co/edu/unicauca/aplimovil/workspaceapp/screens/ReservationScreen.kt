@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Build
+import android.util.Log
 import android.widget.DatePicker
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
@@ -52,6 +53,7 @@ fun ReservationScreen(navController: NavController, place: Place?){
     place?.let {
         objPlace = it
     }
+    Log.d("ACA","Id: "+objPlace.id)
     ReservationBodyContent(navController,objPlace)
 
 }
@@ -119,15 +121,10 @@ fun ReservationBodyContent(navController: NavController?,place: Place?){
                     booking.timeCheckout=timeValueOut
                     booking.guest=numGuestIn
                     booking.seats=numShairsIn
-                    var date:Date=Date.from(Instant.parse(valueIn))
+
                     ButtonReservar(navController, booking)
                 }
             }
-
-            Button(onClick = { navController?.navigate(route= AppScreens.LoginScreen.route)}) {
-                Text(text = "Ir a Login")
-            }
-
         }
     }
 
@@ -200,7 +197,9 @@ fun DatePiker(value:String,onValueChange:(String)->Unit) {
 }
 fun reservar(navController: NavController?,booking: Booking){
     if(FirebaseAuth.getInstance().currentUser?.email!=null){
+        booking.userEmail=FirebaseAuth.getInstance().currentUser?.email!!
         booking.save()
+        navController?.navigate(route= AppScreens.BookingsScreen.route)
     }else{
         navController?.navigate(route= AppScreens.LoginScreen.route)
     }
