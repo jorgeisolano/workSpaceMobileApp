@@ -23,18 +23,25 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import co.edu.unicauca.aplimovil.workspaceapp.models.Booking
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
+import co.edu.unicauca.aplimovil.workspaceapp.models.Sesion
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisClaro
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisOscuro
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.WorkSpaceAppTheme
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
+import com.google.firebase.auth.FirebaseAuth
+import com.orm.SugarRecord
 import com.orm.SugarRecord.find
 import java.util.*
 
 
 @Composable
 fun BookingsScreen(navController: NavController) {
+    var sesion:List<Sesion> = SugarRecord.find(Sesion::class.java,"email = ?", FirebaseAuth.getInstance().currentUser?.email)
+    if(sesion.isNotEmpty()) {
+        println(sesion[0].correo)
+    }
     var bookingList = find(Booking::class.java, "USER_EMAIL = ?", "laura@unicauca.edu.co")
 
     WorkSpaceAppTheme {
@@ -103,7 +110,7 @@ fun InitialText() {
 
 @Composable
 fun bookingCards(place: Place, booking: Booking) {
-    println("size´" +place.name)
+
     val painter =
         rememberAsyncImagePainter(model = ImageRequest.Builder(LocalContext.current)
             .data(place.image).size(
