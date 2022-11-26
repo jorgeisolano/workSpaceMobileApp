@@ -22,8 +22,7 @@ class Booking : SugarRecord {
         timeCheckin: String?,
         timeCheckout: String?,
         seats: Int?,
-        guest: Int?,
-        place: Place,
+        guest: Int?
     )  {
         this.checkin = checkin
         this.checkout = checkout
@@ -31,7 +30,6 @@ class Booking : SugarRecord {
         this.timeCheckout = timeCheckout
         this.seats = seats
         this.guest = guest
-        this.place = place
     }
 
 

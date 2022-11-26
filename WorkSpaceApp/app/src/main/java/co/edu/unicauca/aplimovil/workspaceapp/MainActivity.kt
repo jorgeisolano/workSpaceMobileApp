@@ -3,11 +3,13 @@ package co.edu.unicauca.aplimovil.workspaceapp
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -34,6 +36,7 @@ import com.orm.SugarRecord.count
 import java.util.Date
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -55,6 +58,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(){
     val navController = rememberNavController()
@@ -118,7 +122,7 @@ fun loadData() {
     amenitie2.place = place
     amenitie2.save()
     //Creación de un booking
-    val booking = Booking(Date(2022,11,1),Date(2022,11,1),3,3)
+    val booking = Booking("10-10-2022","10-10-2022","10:00","11:00",3,3)
     booking.userEmail="laura@unicauca.edu.co"
     booking.place=place
 
@@ -156,7 +160,7 @@ fun loadData() {
     amenitiep3.save()
 
     //Creación de un booking
-    val booking2 = Booking(Date(2022,11,1),Date(2022,11,1),3,3)
+    val booking2 = Booking("11-10-2022","11-10-2022","10:00","11:00",3,3)
     booking2.userEmail="laura@unicauca.edu.co"
     booking2.place=place2
     booking2.save()
