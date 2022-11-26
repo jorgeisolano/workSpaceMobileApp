@@ -43,6 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import co.edu.unicauca.aplimovil.workspaceapp.R
+import co.edu.unicauca.aplimovil.workspaceapp.models.Sesion
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -65,10 +67,10 @@ fun LoginBodyContent(navController: NavController?){
     Box(modifier = Modifier
         .fillMaxSize(),
         contentAlignment = Alignment.Center){
-        Column(){
+
             loginBody(navController)
 
-        }
+
 
     }
 }
@@ -103,7 +105,6 @@ fun TopBar(navController: NavController?, title: String){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun loginBody(navController: NavController?){
-
     Column(modifier = Modifier
         .padding(start = 15.dp, end = 15.dp),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -216,7 +217,9 @@ fun finalLogin(it: ActivityResult, navController:NavController?) {
                         Log.d("ACA","Se autentico ${account.email}")
                         Log.d("ACA","Se autentico ${account.displayName}")
                         Log.d("ACA","Se autentico ${account.photoUrl}")
-                        //navController?.popBackStack()
+                        var sesion= Sesion(email = account.email, name = account.displayName, profileUrl = account.photoUrl.toString())
+                        sesion.save()
+                        navController?.popBackStack()
                     }
                 }
             }
@@ -229,20 +232,22 @@ fun finalLogin(it: ActivityResult, navController:NavController?) {
 
 }
 
-fun authEmailAndPassword(email:String,password: String,activity: Activity,navController:NavController?, ){
+fun authEmailAndPassword(email:String,password: String,activity: Activity,navController:NavController? ){
     if(email.isNotEmpty() && password.isNotEmpty()){
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email,password)
             .addOnCompleteListener{
                 if(it.isSuccessful){
                     Log.d("ACA","iNICIO ${it.result.user?.email}")
-                    showAlert(activity,"Bienvenido ${it.result.user?.email}","Estás de vuelta")
-
+                    var sesion= Sesion(email = it.result.user?.email)
+                    sesion.save()
+                    //showAlert(activity,"Bienvenido ${it.result.user?.email}","Estás de vuelta")
+                    navController?.popBackStack()
                 }else{
                     showAlert(activity,"Se ha producido un error autenticando al usuario","Error")
                 }
             }
     }
-    navController?.popBackStack()
+
 }
 
 fun showAlert(activity:Activity,msg:String,title:String){

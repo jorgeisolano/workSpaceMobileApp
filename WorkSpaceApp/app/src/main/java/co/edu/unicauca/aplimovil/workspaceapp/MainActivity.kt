@@ -20,12 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import co.edu.unicauca.aplimovil.workspaceapp.models.*
 
-import co.edu.unicauca.aplimovil.workspaceapp.models.Amenities
-import co.edu.unicauca.aplimovil.workspaceapp.models.Booking
-
-import co.edu.unicauca.aplimovil.workspaceapp.models.Place
-import co.edu.unicauca.aplimovil.workspaceapp.models.Schedule
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppNavigation
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
 import co.edu.unicauca.aplimovil.workspaceapp.screens.MapScreen
@@ -91,7 +87,7 @@ fun MapFloatingButton(navController: NavController){
         )
 }
 
-fun loadData(){
+fun loadData() {
     //Creacion del lugar
     val place = Place(
         "Tinkko",
@@ -125,6 +121,7 @@ fun loadData(){
     val booking = Booking(Date(2022,11,1),Date(2022,11,1),3,3)
     booking.userEmail="laura@unicauca.edu.co"
     booking.place=place
+
     booking.save()
 
     //----------------------------------
@@ -157,11 +154,17 @@ fun loadData(){
     val amenitiep3 = Amenities("Servicio de alimentación", R.drawable.ic_baseline_fastfood_24)
     amenitiep3.place = place2
     amenitiep3.save()
+
     //Creación de un booking
     val booking2 = Booking(Date(2022,11,1),Date(2022,11,1),3,3)
     booking2.userEmail="laura@unicauca.edu.co"
     booking2.place=place2
     booking2.save()
+
+
+    //var sesion=Sesion("","","","","")
+    //sesion.save()
+
 }
 
 fun buscar(id: Long) {

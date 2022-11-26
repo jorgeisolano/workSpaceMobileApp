@@ -14,6 +14,7 @@ import co.edu.unicauca.aplimovil.workspaceapp.models.Place
 import co.edu.unicauca.aplimovil.workspaceapp.screens.*
 import com.google.gson.Gson
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation(navController : NavHostController){
 
@@ -33,8 +34,14 @@ fun AppNavigation(navController : NavHostController){
             val placeS = Gson().fromJson(placeAsJson, Place::class.java)
             DetailScreen(navController, placeS)
         }
-        composable(route = AppScreens.ReservationScreen.route){
-            ReservationScreen(navController)
+        composable(route =  AppScreens.ReservationScreen.route + "/{place}",
+            arguments = listOf(navArgument(name="place"){
+                type = NavType.StringType
+            })
+        ){ backStackEntry ->
+            val placeAsJson = backStackEntry.arguments?.getString("place")
+            val placeS = Gson().fromJson(placeAsJson, Place::class.java)
+            ReservationScreen(navController, placeS)
         }
         composable(route = AppScreens.MapScreen.route){
             MapScreen(navController)
