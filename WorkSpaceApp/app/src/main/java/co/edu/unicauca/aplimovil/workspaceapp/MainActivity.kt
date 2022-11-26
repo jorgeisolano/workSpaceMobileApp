@@ -1,39 +1,30 @@
 package co.edu.unicauca.aplimovil.workspaceapp
 
-import android.Manifest
-import android.content.Context
-import android.content.Intent
 import android.os.Build
-
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
-import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import co.edu.unicauca.aplimovil.workspaceapp.models.*
-
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppNavigation
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
-import co.edu.unicauca.aplimovil.workspaceapp.screens.MapScreen
 import co.edu.unicauca.aplimovil.workspaceapp.screens.components.BottomNavigationBar
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Blanco
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Verde
-import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.WorkSpaceAppTheme
 import com.orm.*
-import com.orm.SugarRecord.count
-import java.util.Date
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -60,7 +51,9 @@ class MainActivity : ComponentActivity() {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainScreen(){
+fun MainScreen() {
+    // State of bottomBar, set state to false, if current page route is "car_details"
+    val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     val navController = rememberNavController()
     val navigationItems = listOf(
         AppScreens.HomeScreen,
@@ -70,25 +63,41 @@ fun MainScreen(){
         AppScreens.ProfileScreen
     )
     Scaffold(
-        bottomBar = { BottomNavigationBar(navController = navController, items = navigationItems as List<AppScreens>)},
-        floatingActionButton =  { MapFloatingButton(navController = navController)},
-        floatingActionButtonPosition = FabPosition.End
+        bottomBar = {
+            val currentRoute = currentRoute(navController = navController)
+            val predicate: (AppScreens) -> Boolean = { it.route == currentRoute }
+            if (navigationItems.any(predicate)) {
+                BottomNavigationBar(navController = navController,
+                    items = navigationItems as List<AppScreens>)
+            }
+        },
+        floatingActionButton = { MapFloatingButton(navController = navController) },
+        floatingActionButtonPosition = FabPosition.End,
+        scaffoldState = scaffoldState
 
     ) {
-        AppNavigation(navController = navController)
+        Column(modifier = Modifier.padding(bottom = 58.dp)) {
+            AppNavigation(navController)
+        }
     }
 }
 
 @Composable
-fun MapFloatingButton(navController: NavController){
+public fun currentRoute(navController: NavHostController): String? {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    return navBackStackEntry?.destination?.route
+}
+
+@Composable
+fun MapFloatingButton(navController: NavController) {
     ExtendedFloatingActionButton(
         contentColor = Blanco,
         backgroundColor = Verde,
         onClick = { navController.navigate(AppScreens.MapScreen.route) },
-        icon = {Icon(Icons.Filled.Place, contentDescription = "Mapa")},
+        icon = { Icon(Icons.Filled.Place, contentDescription = "Mapa") },
         text = { Text(text = "Mapa") },
         elevation = FloatingActionButtonDefaults.elevation(4.dp),
-        )
+    )
 }
 
 fun loadData() {
@@ -125,7 +134,6 @@ fun loadData() {
     val booking = Booking("10-10-2022","10-10-2022","10:00","11:00",3,3)
     booking.userEmail="lauraich@unicauca.edu.co"
     booking.place=place
-
     booking.save()
 
     //----------------------------------
@@ -184,7 +192,6 @@ fun buscar(id: Long) {
     }
 
 }
-
 
 
 //@Preview(showBackground = true)
