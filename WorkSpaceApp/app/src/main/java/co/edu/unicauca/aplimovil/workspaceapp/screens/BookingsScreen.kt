@@ -38,10 +38,7 @@ import java.util.*
 
 @Composable
 fun BookingsScreen(navController: NavController) {
-    var sesion:List<Sesion> = SugarRecord.find(Sesion::class.java,"email = ?", FirebaseAuth.getInstance().currentUser?.email)
-    if(sesion.isNotEmpty()) {
-        println(sesion[0].correo)
-    }
+
     var bookingList = find(Booking::class.java, "USER_EMAIL = ?", "laura@unicauca.edu.co")
 
     WorkSpaceAppTheme {
