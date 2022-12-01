@@ -15,16 +15,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.TextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Place
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -86,7 +86,7 @@ fun searchField() {
             label = { Text("Buscar") },
             singleLine = true,
             leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
-            trailingIcon = { Icon(Icons.Filled.List, contentDescription = null) },
+            trailingIcon = { Icon(Icons.Filled.FilterList, contentDescription = null) },
         )
 
     }
@@ -96,6 +96,7 @@ fun searchField() {
 @Composable
 fun categoriesSelector() {
     Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
             .fillMaxWidth()
     ) {
@@ -103,19 +104,19 @@ fun categoriesSelector() {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Button(onClick = { /*TODO*/ },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Verde),
-                shape = RoundedCornerShape(30.dp)
+                shape = RoundedCornerShape(40.dp)
             ) {
                 Text(text = "Todos", color = Blanco)
             }
             Button(onClick = { /*TODO*/ },
                 colors = ButtonDefaults.buttonColors(backgroundColor = GrisClaro),
-                shape = RoundedCornerShape(30.dp)
+                shape = RoundedCornerShape(40.dp)
             ) {
                 Text(text = "Populares", color = GrisOscuro)
             }
             Button(onClick = { /*TODO*/ },
                 colors = ButtonDefaults.buttonColors(backgroundColor = GrisClaro),
-                shape = RoundedCornerShape(30.dp)) {
+                shape = RoundedCornerShape(40.dp)) {
                 Text(text = "Más cercanos", color = GrisOscuro)
             }
         }
@@ -129,23 +130,41 @@ fun cardPlace(place: Place, navController: NavController) {
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .height(270.dp)
-            .clickable(onClick = {
-                navController.navigate(AppScreens.DetailScreen.route + "/" + placeJson)
-                //navController.navigate(AppScreens.DetailScreen.route)
-            }))
+            .height(270.dp))
     {
-        Text(text = place.name.toString(), fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = Azul)
-        Image(
-            painter = painterResource(id = R.drawable.ic_launcher_background),
-            contentDescription = "Andy Rubin",
-            modifier = Modifier
-                .size(170.dp)
-                .clip(RoundedCornerShape(15)) // clip to the circle shape
-        )
+        Text(text = place.name.toString(),
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 20.sp,
+            color = Azul)
+        Box() {
+            Image(
+                painter = painterResource(id = R.drawable.ic_launcher_background),
+                contentDescription = "Andy Rubin",
+                modifier = Modifier
+                    .size(170.dp)
+                    .clip(RoundedCornerShape(15))
+                    .clickable(onClick = {
+                        navController.navigate(AppScreens.DetailScreen.route + "/" + placeJson)
+                    })
+            )
+            Icon(imageVector = Icons.Filled.FavoriteBorder, "",
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(20.dp, 20.dp)
+                    .background(Color.LightGray, RoundedCornerShape(5.dp))
+                    .padding(5.dp)
+                    .clickable(onClick={
+                        //TO-DO
+                    }),
+                tint = Blanco)
+        }
         Column() {
             Text(text = place.city.toString() + " • Colombia", fontSize = 12.sp, color = Azul)
-            Text(text = place.address.toString(), fontSize = 12.sp, color = GrisOscuro, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(text = place.address.toString(),
+                fontSize = 12.sp,
+                color = GrisOscuro,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis)
         }
     }
 }
@@ -191,8 +210,8 @@ fun HomeBodyContent(navController: NavController, placeList: MutableList<Place>)
     Column(modifier = Modifier.fillMaxHeight()) {
         TopFixedElements()
         Divider(color = GrisClaro, modifier = Modifier
-        .fillMaxWidth()
-        .height(4.dp))
+            .fillMaxWidth()
+            .height(4.dp))
         Column(
             modifier = Modifier
                 .fillMaxWidth()
