@@ -7,8 +7,10 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -79,8 +81,9 @@ fun MainScreen() {
         scaffoldState = scaffoldState
 
     ) {
-        AppNavigation(navController)
-        
+        Column(modifier = Modifier.padding(bottom = 50.dp)) {
+            AppNavigation(navController)
+        }
     }
 }
 
@@ -92,14 +95,14 @@ public fun currentRoute(navController: NavHostController): String? {
 
 @Composable
 fun MapFloatingButton(navController: NavController) {
-    ExtendedFloatingActionButton(
+    FloatingActionButton(
         contentColor = Blanco,
         backgroundColor = Verde,
         onClick = { navController.navigate(AppScreens.MapScreen.route) },
-        icon = { Icon(Icons.Filled.Place, contentDescription = "Mapa") },
-        text = { Text(text = "Mapa") },
         elevation = FloatingActionButtonDefaults.elevation(4.dp),
-    )
+    ){
+        Icon(imageVector = Icons.Filled.MyLocation,"")
+    }
 }
 
 fun loadData() {
@@ -114,7 +117,7 @@ fun loadData() {
         "https://tinkko.com/wp-content/uploads/2021/04/SEDES_MILLA_DE_ORO.jpg",
         "Cerrado los sabados"
     )
-    val idPlace = place.save()
+    place.save()
     //Creacion de los horarios
     val schedule = Schedule("Lunes", "8:00", "12:00")
     schedule.place = place
