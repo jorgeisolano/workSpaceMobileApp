@@ -37,9 +37,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.navArgument
 import co.edu.unicauca.aplimovil.workspaceapp.R
+import co.edu.unicauca.aplimovil.workspaceapp.models.FavoritePlace
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.*
+import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.orm.SugarRecord
 
@@ -50,26 +52,9 @@ private var placeList: MutableList<Place> = ArrayList()
 fun HomeScreen(navController: NavController) {
     placeList = SugarRecord.listAll(Place::class.java)
     Scaffold(
-        //topBar = { topBar()},
         content = { HomeBodyContent(navController = navController, placeList) })
 }
 
-@Composable
-fun topBar() {
-    TopAppBar(
-        title = {
-            Text(text = "Inicio")
-        },
-        navigationIcon = {
-            IconButton(onClick = {}) {
-                Icon(Icons.Filled.ArrowBack, "backIcon")
-            }
-        },
-        backgroundColor = MaterialTheme.colors.secondary,
-        contentColor = Color.White,
-        elevation = 10.dp
-    )
-}
 
 @Composable
 fun searchField() {
@@ -123,9 +108,25 @@ fun categoriesSelector() {
     }
 }
 
+private fun addFavoritePlaceToCurrentUser(place : Place) : Place? {
+    val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email.toString()
+    println("EMAIL " + currentUserEmail)
+    if( currentUserEmail != null){
+//        lateinit var favoritePlace : FavoritePlace
+//        favoritePlace.favoritePlace = place
+//        favoritePlace.userEmail = currentUserEmail
+//        favoritePlace.save()
+//        println("Mostrar lugares favoritos del usuario actual---")
+//        favoritePlace.get_FavoritePlaces()[0]
+        return place
+    }
+    return null
+}
+
 @Composable
 fun cardPlace(place: Place, navController: NavController) {
     val placeJson = Uri.encode(Gson().toJson(place))
+    val favoritePlaceSelected = remember { mutableStateOf(false)}
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
@@ -153,10 +154,14 @@ fun cardPlace(place: Place, navController: NavController) {
                     .padding(20.dp, 20.dp)
                     .background(Color.LightGray, RoundedCornerShape(5.dp))
                     .padding(5.dp)
-                    .clickable(onClick={
-                        //TO-DO
+                    .clickable(onClick = {
+                        if (addFavoritePlaceToCurrentUser(place) != null) {
+
+                            //Mostrar alerta de lugar añadido exitosamente
+                            favoritePlaceSelected.value = !favoritePlaceSelected.value
+                        }
                     }),
-                tint = Blanco)
+                tint = if(favoritePlaceSelected.value) Color.Red else Blanco)
         }
         Column() {
             Text(text = place.city.toString() + " • Colombia", fontSize = 12.sp, color = Azul)
@@ -200,12 +205,6 @@ fun TopFixedElements() {
 
 @Composable
 fun HomeBodyContent(navController: NavController, placeList: MutableList<Place>) {
-//    Column(
-//        verticalArrangement = Arrangement.SpaceEvenly,
-//        modifier = Modifier
-//            .fillMaxHeight()
-//            .padding(20.dp, 5.dp)) {
-//    }
 
     Column(modifier = Modifier.fillMaxHeight()) {
         TopFixedElements()
