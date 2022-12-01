@@ -29,7 +29,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -37,24 +39,23 @@ import androidx.navigation.navArgument
 import co.edu.unicauca.aplimovil.workspaceapp.R
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
-import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisOscuro
-import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Verde
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.*
 import com.google.gson.Gson
 import com.orm.SugarRecord
 
-private var placeList : MutableList<Place> = ArrayList()
+private var placeList: MutableList<Place> = ArrayList()
 
 
 @Composable
-fun HomeScreen(navController: NavController){
+fun HomeScreen(navController: NavController) {
     placeList = SugarRecord.listAll(Place::class.java)
-    Scaffold (
+    Scaffold(
         //topBar = { topBar()},
-        content = { HomeBodyContent(navController = navController, placeList)})
+        content = { HomeBodyContent(navController = navController, placeList) })
 }
 
 @Composable
-fun topBar(){
+fun topBar() {
     TopAppBar(
         title = {
             Text(text = "Inicio")
@@ -73,7 +74,7 @@ fun topBar(){
 @Composable
 fun searchField() {
     var text by remember { mutableStateOf(TextFieldValue("")) }
-    Row(modifier = Modifier.fillMaxWidth()){
+    Row(modifier = Modifier.fillMaxWidth()) {
         //Icon(painter = painterResource(id = R.drawable.ic_baseline_search_24), contentDescription = null)
         var text by rememberSaveable { mutableStateOf("") }
         TextField(
@@ -84,48 +85,48 @@ fun searchField() {
             onValueChange = { text = it },
             label = { Text("Buscar") },
             singleLine = true,
-            leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null)},
-            trailingIcon = { Icon(Icons.Filled.List, contentDescription = null)},
+            leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
+            trailingIcon = { Icon(Icons.Filled.List, contentDescription = null) },
         )
 
     }
 }
 
-@Preview(showBackground = true)
+
 @Composable
-fun categoriesSelector(){
+fun categoriesSelector() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-        ){
-        Text(text = "Categorías", fontSize = 30.sp)
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
+    ) {
+        Text(text = "Categorías", fontWeight = FontWeight.SemiBold, fontSize = 28.sp, color = Azul)
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Button(onClick = { /*TODO*/ },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray),
-                shape = RoundedCornerShape(20.dp)
+                colors = ButtonDefaults.buttonColors(backgroundColor = Verde),
+                shape = RoundedCornerShape(30.dp)
             ) {
-                Text(text = "Todos")
+                Text(text = "Todos", color = Blanco)
             }
             Button(onClick = { /*TODO*/ },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray),
-                shape = RoundedCornerShape(20.dp)
+                colors = ButtonDefaults.buttonColors(backgroundColor = GrisClaro),
+                shape = RoundedCornerShape(30.dp)
             ) {
-                Text(text = "Populares")
+                Text(text = "Populares", color = GrisOscuro)
             }
             Button(onClick = { /*TODO*/ },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.LightGray),
-                shape = RoundedCornerShape(20.dp)) {
-                Text(text = "Más cercanos")
+                colors = ButtonDefaults.buttonColors(backgroundColor = GrisClaro),
+                shape = RoundedCornerShape(30.dp)) {
+                Text(text = "Más cercanos", color = GrisOscuro)
             }
         }
     }
 }
 
 @Composable
-fun cardPlace(place : Place,navController: NavController){
+fun cardPlace(place: Place, navController: NavController) {
     val placeJson = Uri.encode(Gson().toJson(place))
     Column(
-        verticalArrangement = Arrangement.spacedBy(15.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
             .fillMaxWidth()
             .height(270.dp)
@@ -133,49 +134,72 @@ fun cardPlace(place : Place,navController: NavController){
                 navController.navigate(AppScreens.DetailScreen.route + "/" + placeJson)
                 //navController.navigate(AppScreens.DetailScreen.route)
             }))
-        {
-        Text(text = place.name.toString(), fontWeight = FontWeight.Bold, fontSize = 24.sp)
+    {
+        Text(text = place.name.toString(), fontWeight = FontWeight.SemiBold, fontSize = 20.sp, color = Azul)
         Image(
             painter = painterResource(id = R.drawable.ic_launcher_background),
             contentDescription = "Andy Rubin",
             modifier = Modifier
                 .size(170.dp)
-                .clip(RoundedCornerShape(20)) // clip to the circle shape
+                .clip(RoundedCornerShape(15)) // clip to the circle shape
         )
-        Column(){
-            Text(text = place.city.toString(), fontSize = 12.sp)
-            Text(text = "Cerrado los sábados", fontSize = 12.sp)
+        Column() {
+            Text(text = place.city.toString() + " • Colombia", fontSize = 12.sp, color = Azul)
+            Text(text = place.address.toString(), fontSize = 12.sp, color = GrisOscuro, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
 }
 
 @Composable
-fun gridPlaces(placeList: MutableList<Place>,navController: NavController){
+fun gridPlaces(placeList: MutableList<Place>, navController: NavController) {
     LazyVerticalGrid(
         modifier = Modifier
-            .fillMaxWidth()
-            ,
+            .fillMaxWidth(),
         columns = GridCells.Fixed(2),
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp),
         content = {
-            items(placeList){
-                place -> cardPlace(place = place,navController)
+            items(placeList) { place ->
+                cardPlace(place = place, navController)
             }
         }
     )
 }
 
+@Preview(showBackground = true)
 @Composable
-fun HomeBodyContent(navController: NavController, placeList: MutableList<Place>){
+fun TopFixedElements() {
     Column(
-        verticalArrangement = Arrangement.SpaceEvenly,
+        verticalArrangement = Arrangement.spacedBy(20.dp),
         modifier = Modifier
-            .fillMaxHeight()
-            .padding(20.dp, 5.dp)) {
+            .padding(20.dp, 20.dp)
+    ) {
         searchField()
         categoriesSelector()
-        gridPlaces(placeList = placeList,navController)
-        //MapFloatingButton(navController = navController)
     }
+}
+
+@Composable
+fun HomeBodyContent(navController: NavController, placeList: MutableList<Place>) {
+//    Column(
+//        verticalArrangement = Arrangement.SpaceEvenly,
+//        modifier = Modifier
+//            .fillMaxHeight()
+//            .padding(20.dp, 5.dp)) {
+//    }
+
+    Column(modifier = Modifier.fillMaxHeight()) {
+        TopFixedElements()
+        Divider(color = GrisClaro, modifier = Modifier
+        .fillMaxWidth()
+        .height(4.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp, 20.dp)
+        ) {
+            gridPlaces(placeList = placeList, navController)
+        }
+    }
+
 }
