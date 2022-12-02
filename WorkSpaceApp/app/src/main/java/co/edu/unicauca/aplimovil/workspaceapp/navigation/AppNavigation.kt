@@ -58,5 +58,8 @@ fun AppNavigation(navController : NavHostController){
         composable(route=AppScreens.ProfileScreen.route){
             ProfileScreen(navController)
         }
+        composable(route=AppScreens.AboutUsScreen.route){
+            AboutUs(navController = navController)
+        }
     } )
 }

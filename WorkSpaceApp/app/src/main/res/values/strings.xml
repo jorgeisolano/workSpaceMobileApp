@@ -22,4 +22,7 @@
     <string name="ideal_place_label">Find the ideal place!</string>
     <string name="discover_label">Discover the best places to work</string>
     <string name="start_button">Start</string>
+    <string name="aboutus_label">About Us</string>
+    <string name="descriptionApp">The application offers a simple way to find and book coworking spaces in Colombia. A coworking space is a workspace that offers everything you need to perform your own office activity, but also offers work areas and recreation and rest areas in which you can benefit from a multidisciplinary community of coworkers. (Qué Es Coworking, Cómo Funciona El Cotrabajo En 2022, 2022)</string>
+    <string name="AppName">WorkSpaceApp</string>
 </resources>
