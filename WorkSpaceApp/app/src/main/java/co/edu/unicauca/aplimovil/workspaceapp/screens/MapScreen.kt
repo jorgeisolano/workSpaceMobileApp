@@ -32,6 +32,7 @@ import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.*
+import com.google.android.gms.location.Priority.PRIORITY_BALANCED_POWER_ACCURACY
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -178,7 +179,7 @@ fun getLocation(onValueChange:(Location)->Unit){
         )
     }
 
-        fusedLocationClient.getCurrentLocation(PRIORITY_HIGH_ACCURACY,null).addOnSuccessListener {
+        fusedLocationClient.getCurrentLocation(PRIORITY_BALANCED_POWER_ACCURACY,null).addOnSuccessListener {
             onValueChange(it)
         }
 
@@ -209,16 +210,15 @@ fun Mapa(lat:Double,long:Double,nearPlaces:MutableList<Place>,navController: Nav
     ) {
 
        Marker(state=MarkerState(position = location),icon= BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN), title = "Te encuentras aquí")
+        lateinit var placeJson:String
        nearPlaces.forEach { 
            place ->
-
            Marker(
                state= MarkerState(position = LatLng(place.lat!!,place.long!!)),
                title = place.name,
                snippet = "Conocer más",
-               onClick = {   ; false},
+               onClick = { placeJson= Uri.encode(Gson().toJson(place))  ; false},
                onInfoWindowClick = {
-                   var placeJson= Uri.encode(Gson().toJson(place))
                    navController.navigate(route = AppScreens.DetailScreen.route + "/" + placeJson)
                }
            )
@@ -249,20 +249,11 @@ fun dialogMessage(openDialog:MutableState<Boolean>,text:String,navController: Na
             confirmButton = {
                 TextButton(
                     onClick = {
-                        openDialog.value = false
-                    }
-                ) {
-                    Text("Aceptar")
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
                         navController?.popBackStack()
                         openDialog.value = false
                     }
                 ) {
-                    Text("Cancelar")
+                    Text("Cerrar")
                 }
             }
         )

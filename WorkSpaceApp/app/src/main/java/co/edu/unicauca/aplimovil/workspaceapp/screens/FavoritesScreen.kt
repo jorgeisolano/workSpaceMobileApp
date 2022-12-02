@@ -31,11 +31,6 @@ fun topBar(navController: NavController) {
         title = {
             Text(text = "Favoritos", color = Azul)
         },
-        navigationIcon = {
-            IconButton(onClick = {}) {
-                Icon(Icons.Filled.ArrowBack, "backIcon", tint = Azul)
-            }
-        },
         backgroundColor = MaterialTheme.colors.secondary,
         contentColor = Blanco,
         elevation = 10.dp
