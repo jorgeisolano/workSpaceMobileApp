@@ -43,39 +43,46 @@ fun BookingsScreen(navController: NavController) {
     if(email!=null){
         bookingList = find(Booking::class.java, "USER_EMAIL = ?", email.toString())
     }
-    WorkSpaceAppTheme {
         Scaffold(
             topBar = { BookingsTopBar(navController = navController) }
         ) {
-            Column() {
-                if(bookingList.isEmpty()){
+            Column {
+                if(email==null){
                     Column(modifier = Modifier
                         .fillMaxWidth(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = "Aqui podrás observar tus reservaciones realizadas",
+                            text = "Debes iniciar sesión si deseas observar tus reservas realizadas",
                             textAlign = TextAlign.Center,fontSize = 19.sp
                         )
                     }
                 }else{
-                    BookingBodyContent(bookingList)
+                    if(bookingList.isEmpty()){
+                        Column(modifier = Modifier
+                            .fillMaxWidth(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = "Aqui podrás observar tus reservaciones realizadas",
+                                textAlign = TextAlign.Center,fontSize = 19.sp
+                            )
+                        }
+                    }else{
+                        BookingBodyContent(bookingList)
+                    }
                 }
+
             }
         }
 
-    }
+
 }
 
 @Composable
 fun BookingsTopBar(navController: NavController?) {
     Column {
         TopAppBar(backgroundColor = Color.White) {
-            Icon(imageVector = Icons.Default.KeyboardArrowLeft,
-                contentDescription = "Arrow Back",
-                modifier = Modifier
-                    .size(33.dp)
-                    .clickable { navController?.popBackStack() })
             Column(modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 14.dp),
@@ -141,7 +148,7 @@ fun bookingCards(place: Place, booking: Booking) {
                 painter = painter,
                 contentDescription = "Imagen del coworking",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
+                modifier = Modifier.padding(top = 12.dp)
                     .size(110.dp)
                     .clip(RoundedCornerShape(30))
             )
