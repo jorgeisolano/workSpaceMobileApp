@@ -1,41 +1,31 @@
 package co.edu.unicauca.aplimovil.workspaceapp.screens
 
-import android.content.res.Resources.Theme
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.TextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.navArgument
 import co.edu.unicauca.aplimovil.workspaceapp.R
 import co.edu.unicauca.aplimovil.workspaceapp.models.FavoritePlace
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
@@ -44,13 +34,16 @@ import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.orm.SugarRecord
+import com.orm.query.Condition
+import com.orm.query.Select
 
 private var placeList: MutableList<Place> = ArrayList()
-
+private lateinit var currentUserEmail : String
 
 @Composable
 fun HomeScreen(navController: NavController) {
     placeList = SugarRecord.listAll(Place::class.java)
+    currentUserEmail = FirebaseAuth.getInstance().currentUser?.email.toString()
     Scaffold(
         content = { HomeBodyContent(navController = navController, placeList) })
 }
@@ -108,25 +101,32 @@ fun categoriesSelector() {
     }
 }
 
-private fun addFavoritePlaceToCurrentUser(place : Place) : Place? {
-    val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email.toString()
-    println("EMAIL " + currentUserEmail)
-    if( currentUserEmail != null){
-//        lateinit var favoritePlace : FavoritePlace
-//        favoritePlace.favoritePlace = place
-//        favoritePlace.userEmail = currentUserEmail
-//        favoritePlace.save()
-//        println("Mostrar lugares favoritos del usuario actual---")
-//        favoritePlace.get_FavoritePlaces()[0]
-        return place
+private fun handleClickFavoriteIcon(place : Place): Int {
+    if(currentUserEmail.equals(null)){
+        return -1
     }
-    return null
+    var response =  verifySelectedFavoritePlace(place)
+    if(response == null){
+        var newFavoritePlace = FavoritePlace(userEmail = currentUserEmail.toString(), favoritePlace = place)
+        newFavoritePlace.save()
+        return 0
+    }
+    var objFavoritePlace = SugarRecord.findById(FavoritePlace::class.java, response.id)
+    objFavoritePlace.delete()
+    return 1
+}
+
+private fun verifySelectedFavoritePlace(place: Place): FavoritePlace? {
+    return Select.from(FavoritePlace::class.java).
+                    where(Condition.prop("favorite_place").eq(place.id.toString()),
+                    Condition.prop("user_email").eq(currentUserEmail.toString())).first()
 }
 
 @Composable
 fun cardPlace(place: Place, navController: NavController) {
     val placeJson = Uri.encode(Gson().toJson(place))
-    val favoritePlaceSelected = remember { mutableStateOf(false)}
+    val value = verifySelectedFavoritePlace(place) != null
+    val favoritePlaceSelected = remember { mutableStateOf(value)}
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
@@ -148,20 +148,28 @@ fun cardPlace(place: Place, navController: NavController) {
                         navController.navigate(AppScreens.DetailScreen.route + "/" + placeJson)
                     })
             )
-            Icon(imageVector = Icons.Filled.FavoriteBorder, "",
+            Icon(imageVector = Icons.Filled.Favorite, "",
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(20.dp, 20.dp)
                     .background(Color.LightGray, RoundedCornerShape(5.dp))
                     .padding(5.dp)
                     .clickable(onClick = {
-                        if (addFavoritePlaceToCurrentUser(place) != null) {
-
-                            //Mostrar alerta de lugar añadido exitosamente
-                            favoritePlaceSelected.value = !favoritePlaceSelected.value
+                        var response = handleClickFavoriteIcon(place)
+                        println("Respuesta" + response)
+                        when (response) {
+                            -1 -> println("Por favor inicia sesión")
+                            0 -> {
+                                println("Lugar agregado a favoritos")
+                                favoritePlaceSelected.value = !favoritePlaceSelected.value
+                            }
+                            1 -> {
+                                println("Lugar quitado de favoritos")
+                                favoritePlaceSelected.value = !favoritePlaceSelected.value
+                            }
                         }
                     }),
-                tint = if(favoritePlaceSelected.value) Color.Red else Blanco)
+                tint = if(favoritePlaceSelected.value)Color.Red else Blanco)
         }
         Column() {
             Text(text = place.city.toString() + " • Colombia", fontSize = 12.sp, color = Azul)
