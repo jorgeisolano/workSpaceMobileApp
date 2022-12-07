@@ -95,16 +95,7 @@ fun TopBar(navController: NavController?, title: String){
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = FontWeight.Bold, fontSize = 22.sp
             )
-        },
-        navigationIcon = {
-            IconButton(onClick = { navController?.popBackStack() }) {
-                Icon(
-                    imageVector = Icons.Filled.KeyboardArrowLeft,
-                    contentDescription = "Localized description"
-                )
-            }
         }
-
     )
 }
 @OptIn(ExperimentalMaterial3Api::class)
