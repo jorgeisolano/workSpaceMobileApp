@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
@@ -63,16 +64,19 @@ fun ProfileBodyContent(navController: NavController?){
             if(currentUser!=null){
                 profileInfo(sesion = sesion?.get(0) ?: null)
                 ButtonLogOut(navController = navController)
+                Text(text = stringResource(id = R.string.aboutus_label), modifier = Modifier.paddingFromBaseline(top=35.dp).clickable { navController?.navigate(route= AppScreens.AboutUsScreen.route) },fontWeight = FontWeight.Bold, fontSize = 20.sp)
             }else{
                 Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center) {
                     Subtitles(texto = stringResource(id = R.string.no_authenticated_label))
                     Spacer(modifier = Modifier.size(30.dp) )
                     ButtonLoggin(navController)
+                    Text(text = stringResource(id = R.string.aboutus_label), modifier = Modifier.paddingFromBaseline(top=35.dp).clickable { navController?.navigate(route= AppScreens.AboutUsScreen.route) },fontWeight = FontWeight.Bold, fontSize = 20.sp)
                 }
 
             }
-            
+            Spacer(modifier = Modifier.size(30.dp) )
+
             
         }
     }
@@ -109,6 +113,7 @@ fun profileInfo(sesion:Sesion?){
     Spacer(modifier = Modifier.size(10.dp) )
     sesion?.email?.let { Subtitles(texto = it) }
     Spacer(modifier = Modifier.size(30.dp) )
+
 }
 fun LogOut(navController: NavController?){
     var sesion = SugarRecord.find(Sesion::class.java,"email = ?", FirebaseAuth.getInstance().currentUser?.email)
