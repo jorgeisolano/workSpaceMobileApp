@@ -1,6 +1,8 @@
 package co.edu.unicauca.aplimovil.workspaceapp.screens
 
+import android.content.Context
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,8 +22,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,61 +40,71 @@ import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisOscuro
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.orm.SugarRecord
+import com.orm.query.Condition
+import com.orm.query.Select
 
-private var favoriteList: MutableList<FavoritePlace> = ArrayList()
-private var currentUser = FirebaseAuth.getInstance().currentUser?.email
+
 
 @Composable
 fun FavoritesScreen(navController: NavController){
-    var auxFavPlace = FavoritePlace()
-    favoriteList = auxFavPlace.getFavoritePlaces(currentUser!!)
+    var currentUser = FirebaseAuth.getInstance().currentUser?.email
     Scaffold(
       topBar = {topBar(navController)},
-      content = {
-          FavoritesBodyContent(favoriteList,navController)
-      }
-    )
+    ){
+        if(currentUser == null){
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 30.dp, end = 30.dp, top = 15.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "Debes iniciar sesión si deseas observar tus lugares favoritos",
+                    textAlign = TextAlign.Center,fontSize = 19.sp, color = GrisOscuro
+                )
+            }
+        }else{
+            val auxFavPlace = FavoritePlace()
+            val favoriteList = auxFavPlace.getFavoritePlaces(currentUser)
+            FavoritesBodyContent(favoriteList,navController)
+        }
+    }
 }
 
 @Composable
 fun topBar(navController: NavController) {
-    TopAppBar(
-        title = {
-            Text(text = "Favoritos", color = Azul)
-        },
-        navigationIcon = {
-            IconButton(onClick = {}) {
-                Icon(Icons.Filled.ArrowBack, "backIcon", tint = Azul)
+    Column {
+        TopAppBar(backgroundColor = Color.White) {
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 14.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = "Favoritos", fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Azul)
             }
-        },
-        backgroundColor = Blanco,
-        contentColor = Blanco,
-        elevation = 10.dp
-    )
-}
-private fun handleClickFavoriteIcon(place : Place) : Int {
-    val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email.toString()
-    println("EMAIL " + currentUserEmail)
-    if(currentUserEmail != null){
-        var favoritePlace = FavoritePlace()
-        var flag = favoritePlace.isFavoriteSaved(currentUserEmail,place)
-        favoritePlace.userEmail = currentUserEmail
-        favoritePlace.favoritePlace = place
-        if(flag){
-            favoritePlace.delete()
-            return 1
-        }else{
-            favoritePlace.save()
-            return 0
+
         }
     }
-    return -1
+}
+private fun onClickFavoriteIcon(place : Place): Boolean {
+    var response = getFavoritePlace(place)
+    if (response == null) return false
+    var objFavoritePlace = SugarRecord.findById(FavoritePlace::class.java, response.id)
+    objFavoritePlace.delete()
+    return true
+}
+
+private fun getFavoritePlace(place: Place): FavoritePlace? {
+    val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
+    return Select.from(FavoritePlace::class.java).
+    where(Condition.prop("favorite_place").eq(place.id.toString()),
+        Condition.prop("user_email").eq(currentUserEmail.toString())).first()
 }
 
 @Composable
 fun favoriteCardPlace(place: FavoritePlace, navController: NavController){
     val placeJson = Uri.encode(Gson().toJson(place))
-    val favoritePlaceSelected = remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
@@ -112,6 +126,24 @@ fun favoriteCardPlace(place: FavoritePlace, navController: NavController){
                         navController.navigate(AppScreens.DetailScreen.route + "/" + placeJson)
                     })
             )
+            Icon(imageVector = Icons.Filled.Favorite, "",
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(20.dp, 20.dp)
+                    .background(Color.LightGray, RoundedCornerShape(5.dp))
+                    .padding(5.dp)
+                    .clickable(onClick = {
+                        var response = onClickFavoriteIcon(place.favoritePlace!!)
+                        when (response) {
+                            true -> {
+                                showMessage(context, "El lugar ha sido eliminado de favoritos")
+                            }
+                            false -> {
+                            showMessage(context, "Error al eliminar de favoritos")
+                            }
+                        }
+                    }),
+                tint = Color.Red)
         }
         Column() {
             Text(text = place.favoritePlace?.city.toString() + " • Colombia", fontSize = 12.sp, color = Azul)
@@ -146,6 +178,17 @@ fun FavoritesBodyContent(favoriteList: MutableList<FavoritePlace>, navController
         Divider(color = GrisClaro, modifier = Modifier
             .fillMaxWidth()
             .height(4.dp))
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 30.dp, end = 30.dp, top = 15.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = "A continuación podrás observar tus lugares marcados como favoritos",
+                textAlign = TextAlign.Center,fontSize = 19.sp, color = GrisOscuro
+            )
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -154,4 +197,8 @@ fun FavoritesBodyContent(favoriteList: MutableList<FavoritePlace>, navController
             gridFavoritePlaces(favoriteList = favoriteList, navController)
         }
     }
+}
+
+private fun showMessage(context: Context, message:String){
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }

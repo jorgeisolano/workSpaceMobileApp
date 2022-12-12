@@ -1,9 +1,11 @@
 package co.edu.unicauca.aplimovil.workspaceapp.screens
 
+
+import android.content.Context
+import android.net.Uri
+import android.widget.Toast
 import android.Manifest
 import android.location.Location
-import android.net.Uri
-import android.widget.Button
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,15 +47,13 @@ import com.google.gson.Gson
 import com.orm.SugarRecord
 import com.orm.query.Condition
 import com.orm.query.Select
+import kotlin.reflect.typeOf
 
 private var placeList: MutableList<Place> = ArrayList()
-private lateinit var currentUserEmail: String
 
 @Composable
 fun HomeScreen(navController: NavController) {
     placeList =SugarRecord.listAll(Place::class.java)
-    //var placeList by rememberSaveable { mutableStateOf(SugarRecord.listAll(Place::class.java)) }
-    currentUserEmail = FirebaseAuth.getInstance().currentUser?.email.toString()
     Scaffold(
         content = { HomeBodyContent(navController = navController, placeList) })
 }
@@ -216,14 +217,12 @@ fun nearPlaces(location: Location, listPlaces: MutableList<Place>): MutableList<
     return resPlaces
 }
 
-private fun handleClickFavoriteIcon(place: Place): Int {
-    if (currentUserEmail.equals(null)) {
-        return -1
-    }
-    var response = verifySelectedFavoritePlace(place)
-    if (response == null) {
-        var newFavoritePlace =
-            FavoritePlace(userEmail = currentUserEmail.toString(), favoritePlace = place)
+private fun handleClickFavoriteIcon(place : Place): Int {
+    val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
+    if(currentUserEmail.equals(null)) return -1
+    var response =  verifySelectedFavoritePlace(place)
+    if(response == null){
+        var newFavoritePlace = FavoritePlace(userEmail = currentUserEmail.toString(), favoritePlace = place)
         newFavoritePlace.save()
         return 0
     }
@@ -233,16 +232,19 @@ private fun handleClickFavoriteIcon(place: Place): Int {
 }
 
 private fun verifySelectedFavoritePlace(place: Place): FavoritePlace? {
-    return Select.from(FavoritePlace::class.java)
-        .where(Condition.prop("favorite_place").eq(place.id.toString()),
-            Condition.prop("user_email").eq(currentUserEmail.toString())).first()
+    val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email
+    return Select.from(FavoritePlace::class.java).
+                    where(Condition.prop("favorite_place").eq(place.id.toString()),
+                    Condition.prop("user_email").eq(currentUserEmail.toString())).first()
 }
 
 @Composable
 fun cardPlace(place: Place, navController: NavController) {
+
     val placeJson = Uri.encode(Gson().toJson(place))
     val value = verifySelectedFavoritePlace(place) != null
-    val favoritePlaceSelected = remember { mutableStateOf(value) }
+    val favoritePlaceSelected = remember { mutableStateOf(value)}
+    val context = LocalContext.current
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
@@ -274,13 +276,15 @@ fun cardPlace(place: Place, navController: NavController) {
                         var response = handleClickFavoriteIcon(place)
                         println("Respuesta" + response)
                         when (response) {
-                            -1 -> println("Por favor inicia sesión")
+                            -1 -> {
+                                showMessage(context, "Error al añadir a favoritos, por favor inicia sesión")
+                            }
                             0 -> {
-                                println("Lugar agregado a favoritos")
+                                showMessage(context, "El lugar ha sido agregado a favoritos")
                                 favoritePlaceSelected.value = !favoritePlaceSelected.value
                             }
                             1 -> {
-                                println("Lugar quitado de favoritos")
+                                showMessage(context, "El lugar ha sido eliminado de favoritos")
                                 favoritePlaceSelected.value = !favoritePlaceSelected.value
                             }
                         }
@@ -328,7 +332,6 @@ fun TopFixedElements(navController: NavController) {
 
 @Composable
 fun HomeBodyContent(navController: NavController, placeList: MutableList<Place>) {
-
     Column(modifier = Modifier.fillMaxHeight()) {
         TopFixedElements(navController)
         Divider(color = GrisClaro, modifier = Modifier
@@ -343,4 +346,8 @@ fun HomeBodyContent(navController: NavController, placeList: MutableList<Place>)
         }
     }
 
+}
+
+private fun showMessage(context: Context, message:String){
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }

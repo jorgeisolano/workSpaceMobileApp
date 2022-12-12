@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import co.edu.unicauca.aplimovil.workspaceapp.models.Booking
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
 import co.edu.unicauca.aplimovil.workspaceapp.models.Sesion
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Azul
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisClaro
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisOscuro
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.WorkSpaceAppTheme
@@ -48,24 +49,44 @@ fun BookingsScreen(navController: NavController) {
         ) {
             Column {
                 if(email==null){
+//                    Column(modifier = Modifier
+//                        .fillMaxWidth(),
+//                        verticalArrangement = Arrangement.Center,
+//                        horizontalAlignment = Alignment.CenterHorizontally) {
+//                        Text(
+//                            text = "Debes iniciar sesión si deseas observar tus reservas realizadas",
+//                            textAlign = TextAlign.Center,fontSize = 19.sp
+//                        )
+//                    }
                     Column(modifier = Modifier
-                        .fillMaxWidth(),
-                        verticalArrangement = Arrangement.Center,
+                        .fillMaxWidth()
+                        .padding(start = 30.dp, end = 30.dp, top = 15.dp),
+                        verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = "Debes iniciar sesión si deseas observar tus reservas realizadas",
-                            textAlign = TextAlign.Center,fontSize = 19.sp
+                            textAlign = TextAlign.Center,fontSize = 19.sp, color = GrisOscuro
                         )
                     }
                 }else{
                     if(bookingList.isEmpty()){
+//                        Column(modifier = Modifier
+//                            .fillMaxWidth(),
+//                            verticalArrangement = Arrangement.Center,
+//                            horizontalAlignment = Alignment.CenterHorizontally) {
+//                            Text(
+//                                text = "Aqui podrás observar tus reservaciones realizadas",
+//                                textAlign = TextAlign.Center,fontSize = 19.sp
+//                            )
+//                        }
                         Column(modifier = Modifier
-                            .fillMaxWidth(),
-                            verticalArrangement = Arrangement.Center,
+                            .fillMaxWidth()
+                            .padding(start = 30.dp, end = 30.dp, top = 15.dp),
+                            verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
                                 text = "Aqui podrás observar tus reservaciones realizadas",
-                                textAlign = TextAlign.Center,fontSize = 19.sp
+                                textAlign = TextAlign.Center,fontSize = 19.sp, color = GrisOscuro
                             )
                         }
                     }else{
@@ -88,7 +109,7 @@ fun BookingsTopBar(navController: NavController?) {
                 .padding(top = 14.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "Reservas", fontWeight = FontWeight.Bold, fontSize = 22.sp)
+                Text(text = "Reservas", fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Azul)
             }
 
         }
