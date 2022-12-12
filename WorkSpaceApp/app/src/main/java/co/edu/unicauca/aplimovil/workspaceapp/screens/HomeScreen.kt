@@ -1,6 +1,9 @@
 package co.edu.unicauca.aplimovil.workspaceapp.screens
 
+import android.Manifest
+import android.location.Location
 import android.net.Uri
+import android.widget.Button
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -25,12 +29,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
 import co.edu.unicauca.aplimovil.workspaceapp.R
 import co.edu.unicauca.aplimovil.workspaceapp.models.FavoritePlace
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.*
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.orm.SugarRecord
@@ -38,11 +46,12 @@ import com.orm.query.Condition
 import com.orm.query.Select
 
 private var placeList: MutableList<Place> = ArrayList()
-private lateinit var currentUserEmail : String
+private lateinit var currentUserEmail: String
 
 @Composable
 fun HomeScreen(navController: NavController) {
-    placeList = SugarRecord.listAll(Place::class.java)
+    placeList =SugarRecord.listAll(Place::class.java)
+    //var placeList by rememberSaveable { mutableStateOf(SugarRecord.listAll(Place::class.java)) }
     currentUserEmail = FirebaseAuth.getInstance().currentUser?.email.toString()
     Scaffold(
         content = { HomeBodyContent(navController = navController, placeList) })
@@ -72,19 +81,24 @@ fun searchField() {
 
 
 @Composable
-fun categoriesSelector() {
+fun categoriesSelector(navController: NavController) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
             .fillMaxWidth()
     ) {
+        var cercanos by remember { mutableStateOf(false) }
+        val colorT = if (cercanos) GrisClaro else Verde
+        val colorC = if (cercanos) Verde else GrisClaro
+        val textT = if (cercanos) GrisOscuro else Blanco
+        val textC = if (cercanos) Blanco else GrisOscuro
         Text(text = "Categorías", fontWeight = FontWeight.SemiBold, fontSize = 28.sp, color = Azul)
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Button(onClick = { /*TODO*/ },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Verde),
+            Button(onClick = {cercanos=false },
+                colors = ButtonDefaults.buttonColors(backgroundColor = colorT),
                 shape = RoundedCornerShape(40.dp)
             ) {
-                Text(text = "Todos", color = Blanco)
+                Text(text = "Todos", color = textT)
             }
             Button(onClick = { /*TODO*/ },
                 colors = ButtonDefaults.buttonColors(backgroundColor = GrisClaro),
@@ -92,22 +106,124 @@ fun categoriesSelector() {
             ) {
                 Text(text = "Populares", color = GrisOscuro)
             }
-            Button(onClick = { /*TODO*/ },
-                colors = ButtonDefaults.buttonColors(backgroundColor = GrisClaro),
+              Button(onClick = { cercanos = true },
+                colors = ButtonDefaults.buttonColors(backgroundColor = colorC),
                 shape = RoundedCornerShape(40.dp)) {
-                Text(text = "Más cercanos", color = GrisOscuro)
+                Text(text = "Más cercanos", color = textC)
             }
         }
+        if (cercanos) {
+            LocationPermissions(navController);
+        }
+
     }
 }
 
-private fun handleClickFavoriteIcon(place : Place): Int {
-    if(currentUserEmail.equals(null)){
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun LocationPermissions(navController: NavController?) {
+    val openDialog = remember { mutableStateOf(true) }
+    val permissionStates = rememberMultiplePermissionsState(
+        permissions = listOf(
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+    )
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(key1 = lifecycleOwner, effect = {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_START -> {
+                    permissionStates.launchMultiplePermissionRequest()
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    })
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        val allPermissionsRevoked =
+            permissionStates.permissions.size ==
+                    permissionStates.revokedPermissions.size
+        if (!allPermissionsRevoked) {
+            if (isLocationEnabled()) {
+                var location = rememberSaveable {
+                    mutableStateOf(Location(null))
+                }
+                getLocation(onValueChange = {
+                    location.value = it
+                })
+                //Text("Permisos dados")
+                if (location.value.latitude != 0.0 && location.value.longitude != 0.0) {
+                    var placeL = SugarRecord.listAll(Place::class.java)
+                    var nearPlaceList = nearPlaces(location = location.value, placeL)
+                    Column(modifier = Modifier.fillMaxHeight()) {
+                        Divider(color = GrisClaro, modifier = Modifier
+                            .fillMaxWidth()
+                            .height(4.dp))
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp, 20.dp)
+                        ) {
+                            gridPlaces(placeList = nearPlaceList, navController!!)
+                        }
+                    }
+                }
+            } else {
+                dialogMessage(openDialog = openDialog,
+                    text = "Habilita la ubicación de tu dispositivo desde configuraciones",
+                    navController)
+            }
+
+        } else if (permissionStates.shouldShowRationale) {
+            //dialogMessage(openDialog = openDialog, text = "Por favor cambia la configuracion de la ubicacion a una más exacta")
+
+        } else {
+            if (permissionStates.revokedPermissions.size == 2) {
+                dialogMessage(openDialog = openDialog,
+                    text = "Para acceder a esta funcionalidad permite el uso de la ubicación desde la configuracion de tu dispositivo",
+                    navController)
+
+            }
+        }
+
+    }
+}
+
+fun nearPlaces(location: Location, listPlaces: MutableList<Place>): MutableList<Place> {
+    var resPlaces: MutableList<Place> = mutableListOf()
+    for (item in listPlaces) {
+        var distance: FloatArray = floatArrayOf(0F,0F,0F);
+        Location.distanceBetween(location.latitude,
+            location.longitude,
+            item.lat!!,
+            item.long!!,
+            distance)
+        if (distance[0] < 10000.0) {
+            resPlaces.add(item)
+        }
+    }
+    return resPlaces
+}
+
+private fun handleClickFavoriteIcon(place: Place): Int {
+    if (currentUserEmail.equals(null)) {
         return -1
     }
-    var response =  verifySelectedFavoritePlace(place)
-    if(response == null){
-        var newFavoritePlace = FavoritePlace(userEmail = currentUserEmail.toString(), favoritePlace = place)
+    var response = verifySelectedFavoritePlace(place)
+    if (response == null) {
+        var newFavoritePlace =
+            FavoritePlace(userEmail = currentUserEmail.toString(), favoritePlace = place)
         newFavoritePlace.save()
         return 0
     }
@@ -117,16 +233,16 @@ private fun handleClickFavoriteIcon(place : Place): Int {
 }
 
 private fun verifySelectedFavoritePlace(place: Place): FavoritePlace? {
-    return Select.from(FavoritePlace::class.java).
-                    where(Condition.prop("favorite_place").eq(place.id.toString()),
-                    Condition.prop("user_email").eq(currentUserEmail.toString())).first()
+    return Select.from(FavoritePlace::class.java)
+        .where(Condition.prop("favorite_place").eq(place.id.toString()),
+            Condition.prop("user_email").eq(currentUserEmail.toString())).first()
 }
 
 @Composable
 fun cardPlace(place: Place, navController: NavController) {
     val placeJson = Uri.encode(Gson().toJson(place))
     val value = verifySelectedFavoritePlace(place) != null
-    val favoritePlaceSelected = remember { mutableStateOf(value)}
+    val favoritePlaceSelected = remember { mutableStateOf(value) }
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
@@ -169,7 +285,7 @@ fun cardPlace(place: Place, navController: NavController) {
                             }
                         }
                     }),
-                tint = if(favoritePlaceSelected.value)Color.Red else Blanco)
+                tint = if (favoritePlaceSelected.value) Color.Red else Blanco)
         }
         Column() {
             Text(text = place.city.toString() + " • Colombia", fontSize = 12.sp, color = Azul)
@@ -198,16 +314,15 @@ fun gridPlaces(placeList: MutableList<Place>, navController: NavController) {
     )
 }
 
-@Preview(showBackground = true)
 @Composable
-fun TopFixedElements() {
+fun TopFixedElements(navController: NavController) {
     Column(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         modifier = Modifier
             .padding(20.dp, 20.dp)
     ) {
         searchField()
-        categoriesSelector()
+        categoriesSelector(navController)
     }
 }
 
@@ -215,7 +330,7 @@ fun TopFixedElements() {
 fun HomeBodyContent(navController: NavController, placeList: MutableList<Place>) {
 
     Column(modifier = Modifier.fillMaxHeight()) {
-        TopFixedElements()
+        TopFixedElements(navController)
         Divider(color = GrisClaro, modifier = Modifier
             .fillMaxWidth()
             .height(4.dp))
