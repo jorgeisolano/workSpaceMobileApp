@@ -18,4 +18,5 @@ sealed class AppScreens(
     object BookingsScreen : AppScreens("bookings_screen","Reservas",Icons.Filled.Check)
     object FavoritesScreen : AppScreens("favorites_screen","Favoritos",Icons.Filled.Favorite)
     object ProfileScreen : AppScreens("profile_screen","Perfil",Icons.Filled.Person)
+    object AboutUsScreen : AppScreens("aboutus_screen","Perfil",Icons.Filled.Info)
 }
