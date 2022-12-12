@@ -103,7 +103,7 @@ fun MapBodyContent(navController: NavController?) {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-private fun checkLocationPermissions(navController: NavController?) {
+fun checkLocationPermissions(navController: NavController?) {
     val openDialog = remember { mutableStateOf(true) }
     val permissionStates = rememberMultiplePermissionsState(
         permissions = listOf(
@@ -196,7 +196,7 @@ fun getLocation(onValueChange: (Location) -> Unit) {
         )
     }
     //PRIORITY_HIGH_ACCURACY
-    fusedLocationClient.getCurrentLocation(PRIORITY_BALANCED_POWER_ACCURACY, null)
+    fusedLocationClient.getCurrentLocation(PRIORITY_HIGH_ACCURACY, null)
         .addOnSuccessListener {
             onValueChange(it)
         }
@@ -287,19 +287,6 @@ fun dialogMessage(openDialog: MutableState<Boolean>, text: String, navController
     }
 }
 
-fun nearPlaces(location: Location, listPlaces: MutableList<Place>): MutableList<Place> {
-    var resPlaces: MutableList<Place> = mutableListOf()
-    listPlaces.add(Place("dasd", "fsdf", "fsdfsd", "sdfs", 2.4419417, -76.6092564, "fsd", ""))
-    for (item in listPlaces) {
-        var loc = Location(null)
-        loc.latitude = item.lat!!
-        loc.longitude = item.long!!
-        if (location.distanceTo(loc) < 10000.0) {
-            resPlaces.add(item)
-        }
-    }
-    return resPlaces
-}
 
 @Preview(showBackground = true)
 @Composable
