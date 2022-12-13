@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
@@ -40,6 +41,9 @@ import co.edu.unicauca.aplimovil.workspaceapp.models.FavoritePlace
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.*
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import coil.size.Size
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.firebase.auth.FirebaseAuth
@@ -174,7 +178,7 @@ fun LocationPermissions(navController: NavController?) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(20.dp, 20.dp)
+                                .padding(0.dp, 20.dp)
                         ) {
                             gridPlaces(placeList = nearPlaceList, navController!!)
                         }
@@ -245,6 +249,10 @@ fun cardPlace(place: Place, navController: NavController) {
     val value = verifySelectedFavoritePlace(place) != null
     val favoritePlaceSelected = remember { mutableStateOf(value)}
     val context = LocalContext.current
+    val painter =
+        rememberAsyncImagePainter(model = ImageRequest.Builder(LocalContext.current)
+            .data(place.image).size(
+                Size.ORIGINAL).build())
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
@@ -257,8 +265,9 @@ fun cardPlace(place: Place, navController: NavController) {
             color = Azul)
         Box() {
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
+                painter = painter,
                 contentDescription = "Andy Rubin",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(170.dp)
                     .clip(RoundedCornerShape(15))
@@ -336,7 +345,7 @@ fun HomeBodyContent(navController: NavController, placeList: MutableList<Place>)
         TopFixedElements(navController)
         Divider(color = GrisClaro, modifier = Modifier
             .fillMaxWidth()
-            .height(4.dp))
+            .height(8.dp))
         Column(
             modifier = Modifier
                 .fillMaxWidth()

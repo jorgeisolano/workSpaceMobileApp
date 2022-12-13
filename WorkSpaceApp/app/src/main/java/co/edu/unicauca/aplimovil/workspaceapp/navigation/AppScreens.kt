@@ -15,7 +15,7 @@ sealed class AppScreens(
     object ReservationScreen : AppScreens("reservation_screen","asd",Icons.Filled.Lock)
     object MapScreen : AppScreens("map_screen","Mapa",Icons.Filled.Place)
     object LoginScreen : AppScreens("login_screen","asd",Icons.Filled.Lock)
-    object BookingsScreen : AppScreens("bookings_screen","Reservas",Icons.Filled.Check)
+    object BookingsScreen : AppScreens("bookings_screen","Reservas",Icons.Filled.EventAvailable)
     object FavoritesScreen : AppScreens("favorites_screen","Favoritos",Icons.Filled.Favorite)
     object ProfileScreen : AppScreens("profile_screen","Perfil",Icons.Filled.Person)
     object AboutUsScreen : AppScreens("aboutus_screen","Perfil",Icons.Filled.Info)

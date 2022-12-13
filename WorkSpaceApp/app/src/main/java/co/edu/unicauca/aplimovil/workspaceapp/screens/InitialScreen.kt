@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import androidx.navigation.navDeepLink
 import co.edu.unicauca.aplimovil.workspaceapp.R
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Azul
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
@@ -57,7 +58,8 @@ fun bodyContentInitialScreen(navController:NavController?){
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(start = 30.dp, end = 30.dp, top = 50.dp),
-        horizontalAlignment = Alignment.CenterHorizontally){
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(18.dp)){
         Box( modifier = Modifier
             .height(300.dp)
             .fillMaxWidth(),
@@ -65,14 +67,14 @@ fun bodyContentInitialScreen(navController:NavController?){
             AsyncImage(model = ImageRequest.Builder(LocalContext.current)
                 .data(R.drawable.workspace)
                 .build(),
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize(0.9f),
                 contentDescription = "Profile")
         }
         Spacer(modifier = Modifier.size(50.dp))
         Title(texto = stringResource(id = R.string.ideal_place_label))
         Text(
             stringResource(id=R.string.discover_label),
-            fontSize = 30.sp,
+            fontSize = 22.sp,
             color = Color.Gray,
             textAlign = TextAlign.Center
         )
@@ -102,7 +104,7 @@ fun IniciarButtomBar(navController: NavController?){
 }
 @Composable
 fun Title(texto : String){
-    Text(text = texto, modifier = Modifier.paddingFromBaseline(top=35.dp),fontWeight = FontWeight.Bold, fontSize = 30.sp)
+    Text(text = texto, modifier = Modifier.paddingFromBaseline(top=35.dp),fontWeight = FontWeight.Bold, fontSize = 28.sp, color = Azul)
 }
 //@Composable
 //fun BodyContent(navController:NavController){
