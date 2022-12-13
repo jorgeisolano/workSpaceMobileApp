@@ -83,8 +83,8 @@ fun ReservationBodyContent(navController: NavController?,place: Place?){
                 .padding(20.dp, 0.dp))
         {
             Subtitles(texto = stringResource(id = R.string.description_label))
-            TextGray(text = "Bogotá • Colombia")
-            TextGray(text = "Edificio EcoTeck Cl.99 #10-57 cerca del parque de la 93")
+            TextGray(text = place?.city!!)
+            TextGray(text = place?.address!!)
             TextGray(text = stringResource(id = R.string.reservation_day_msg))
             Subtitles(texto = stringResource(id = R.string.checkin_label))
             val (valueIn ,onValueChangeIn) = rememberSaveable {mutableStateOf("") }

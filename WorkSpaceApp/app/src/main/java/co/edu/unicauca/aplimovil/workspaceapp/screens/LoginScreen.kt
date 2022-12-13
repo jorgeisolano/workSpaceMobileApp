@@ -9,6 +9,7 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -95,6 +96,13 @@ fun TopBar(navController: NavController?, title: String){
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = FontWeight.Bold, fontSize = 22.sp
             )
+        },
+        navigationIcon = {
+            androidx.compose.material.Icon(imageVector = Icons.Default.KeyboardArrowLeft,
+                contentDescription = "Arrow Back",
+                modifier = Modifier
+                    .size(33.dp)
+                    .clickable { navController?.popBackStack() })
         }
     )
 }
