@@ -40,6 +40,10 @@ import co.edu.unicauca.aplimovil.workspaceapp.R
 import co.edu.unicauca.aplimovil.workspaceapp.models.Booking
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Azul
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisClaro
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisOscuro
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Verde
 import com.google.firebase.auth.FirebaseAuth
 import com.orm.SugarRecord
 import java.time.Instant
@@ -67,25 +71,29 @@ fun Preview(){
 @Composable
 fun ReservationBodyContent(navController: NavController?,place: Place?){
     Scaffold (
-        topBar = { TopBar(navController = navController, title = "Tinkko")}
+        topBar = {
+            if (place != null) {
+                ReservationTopBar(navController = navController, placeName = place.name!!)
+            }
+        }
     ){
-        Column(modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(30.dp))
+        Column(verticalArrangement = Arrangement.spacedBy(5.dp),
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(20.dp, 0.dp))
         {
             Subtitles(texto = stringResource(id = R.string.description_label))
             TextGray(text = place?.city!!)
             TextGray(text = place?.address!!)
             TextGray(text = stringResource(id = R.string.reservation_day_msg))
-            
             Subtitles(texto = stringResource(id = R.string.checkin_label))
             val (valueIn ,onValueChangeIn) = rememberSaveable {mutableStateOf("") }
             DatePiker(valueIn,onValueChangeIn)
             Subtitles(texto = stringResource(id = R.string.checkout_label))
             val (valueOut ,onValueChangeOut) = rememberSaveable {mutableStateOf("") }
             DatePiker(valueOut,onValueChangeOut)
-            val (timeValueIn ,onTimeValueChangeIn) = rememberSaveable {mutableStateOf(value="Selecciona hora") }
-            val (timeValueOut ,onTimeValueChangeOut) = rememberSaveable {mutableStateOf(value="Selecciona hora") }
+            val (timeValueIn ,onTimeValueChangeIn) = rememberSaveable {mutableStateOf(value="Seleccione hora") }
+            val (timeValueOut ,onTimeValueChangeOut) = rememberSaveable {mutableStateOf(value="Seleccione hora") }
 
             Row(modifier = Modifier.fillMaxWidth()) {
                 val context= LocalContext.current
@@ -93,26 +101,25 @@ fun ReservationBodyContent(navController: NavController?,place: Place?){
                 val (numShairsIn ,numShairsOut) = rememberSaveable {mutableStateOf(value=0) }
                 Column(modifier = Modifier.width(((width-60)/2).dp)) {
                     Subtitles(texto = "Hora Entrada")
-                    Spacer(modifier = Modifier.size(10.dp) )
+                    Spacer(modifier = Modifier.size(12.dp) )
                     TimePiker(timeValueIn,onTimeValueChangeIn)
-                    Spacer(modifier = Modifier.size(10.dp) )
+                    Spacer(modifier = Modifier.size(12.dp) )
                     Subtitles(texto = stringResource(id = R.string.shair_label))
-                    Spacer(modifier = Modifier.size(10.dp) )
+                    Spacer(modifier = Modifier.size(12.dp) )
                     selectorNumerico(numShairsIn,numShairsOut)
-                    Spacer(modifier = Modifier.size(10.dp) )
+                    Spacer(modifier = Modifier.size(40.dp) )
                     ButtonCancelar(navController)
                 }
-                Spacer(modifier = Modifier.size(10.dp) )
+                Spacer(modifier = Modifier.size(18.dp) )
                 Column(modifier = Modifier.width(((width-60)/2).dp)) {
                     Subtitles(texto = "Hora Salida")
-                    Spacer(modifier = Modifier.size(10.dp) )
+                    Spacer(modifier = Modifier.size(12.dp) )
                     TimePiker(timeValueOut,onTimeValueChangeOut)
-                    Spacer(modifier = Modifier.size(10.dp) )
+                    Spacer(modifier = Modifier.size(12.dp) )
                     Subtitles(texto = stringResource(id = R.string.guests_label))
-                    Spacer(modifier = Modifier.size(10.dp) )
+                    Spacer(modifier = Modifier.size(12.dp) )
                     val (numGuestIn ,numGuestOut) = rememberSaveable {mutableStateOf(value=0) }
                     selectorNumerico(numGuestIn,numGuestOut)
-                    Spacer(modifier = Modifier.size(10.dp) )
                     var booking=Booking()
                     booking.place=place!!
                     booking.checkin=valueIn
@@ -121,14 +128,35 @@ fun ReservationBodyContent(navController: NavController?,place: Place?){
                     booking.timeCheckout=timeValueOut
                     booking.guest=numGuestIn
                     booking.seats=numShairsIn
-
+                    Spacer(modifier = Modifier.size(40.dp) )
                     ButtonReservar(navController, booking)
                 }
             }
         }
     }
-
 }
+
+@Composable
+fun ReservationTopBar(navController: NavController?,placeName:String){
+    Column {
+        androidx.compose.material.TopAppBar(backgroundColor = Color.White) {
+            androidx.compose.material.Icon(imageVector = Icons.Default.KeyboardArrowLeft,
+                contentDescription = "Arrow Back",
+                modifier = Modifier
+                    .size(33.dp)
+                    .clickable { navController?.popBackStack() })
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 14.dp, end = 25.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = placeName, fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Azul)
+            }
+            /*modifier = Modifier.offset(x = 115.dp)*/
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun selectorNumerico(value:Int,onValueChange:(Int)->Unit){
@@ -136,16 +164,16 @@ fun selectorNumerico(value:Int,onValueChange:(Int)->Unit){
         OutlinedTextField(
             value = value.toString(),
             readOnly = true,
-            textStyle = TextStyle(fontSize = 20.sp,fontWeight = FontWeight.Bold, textAlign = TextAlign.Center),
+            textStyle = TextStyle(fontSize = 20.sp,fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, color = GrisOscuro),
             onValueChange = {
                 onValueChange(it.toInt())
             },
             leadingIcon = { Icon(painter = painterResource(id = R.drawable.do_not_disturb_on), contentDescription ="Restar", modifier = Modifier
                 .clickable { if (value != 0) onValueChange(value - 1) }
-                .size(32.dp)) },
+                .size(25.dp)) },
             trailingIcon ={ Icon(painter = painterResource(id = R.drawable.add_circle), contentDescription ="Aumentar", modifier = Modifier
                 .clickable { onValueChange(value + 1) }
-                .size(32.dp)) },
+                .size(25.dp)) },
             singleLine=true,
             modifier = Modifier
                 .fillMaxWidth()
@@ -183,7 +211,7 @@ fun DatePiker(value:String,onValueChange:(String)->Unit) {
             OutlinedTextField(
                 value = value,
                 readOnly = true,
-                textStyle = TextStyle(fontSize = 20.sp,fontWeight = FontWeight.Bold, textAlign = TextAlign.Center),
+                textStyle = TextStyle(fontSize = 16.sp,fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, color = GrisOscuro),
                 onValueChange = { onValueChange(it)},
                 trailingIcon ={ Icon(imageVector = Icons.Filled.DateRange, contentDescription ="DatePiker", modifier = Modifier.clickable { mDatePickerDialog.show() }) },
                 singleLine=true,
@@ -206,11 +234,14 @@ fun reservar(navController: NavController?,booking: Booking){
 }
 @Composable
 fun ButtonReservar(navController: NavController?,booking: Booking){
-        Button(onClick = { reservar(navController,booking ) }, modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(30.dp)),
-            colors=ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.loginGoogle), contentColor = Color.White)
-        ) {
+        Button(
+            onClick = { reservar(navController, booking) },
+            colors = ButtonDefaults.buttonColors(containerColor = Verde, contentColor = Color.White),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(30.dp)),
+
+            ) {
 
             Text(text = stringResource(id = R.string.reserve_label), fontSize = 20.sp, color=Color.White, fontWeight = FontWeight.Bold)
         }
@@ -220,9 +251,9 @@ fun ButtonCancelar(navController: NavController?){
         Button(onClick = { navController?.popBackStack() }, modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(30.dp)),
-            colors=ButtonDefaults.buttonColors(containerColor = colorResource(id = R.color.login), contentColor = Color.White)
+            colors=ButtonDefaults.buttonColors(containerColor = GrisClaro, contentColor = Azul)
         ) {
-            Text(text = stringResource(id = R.string.cancel_label), fontWeight = FontWeight.Bold,fontSize = 20.sp, color=Color.White)
+            Text(text = stringResource(id = R.string.cancel_label), fontWeight = FontWeight.Bold,fontSize = 20.sp, color= Azul)
         }
 }
 @OptIn(ExperimentalMaterial3Api::class)
@@ -241,7 +272,7 @@ fun TimePiker(value:String,onValueChange:(String)->Unit){
     OutlinedTextField(
         value = value,
         readOnly = true,
-        textStyle = TextStyle(fontSize = 15.sp,fontWeight = FontWeight.Bold),
+        textStyle = TextStyle(fontSize = 13.sp,fontWeight = FontWeight.Bold, color = GrisOscuro),
         onValueChange = { onValueChange(it)},
         trailingIcon ={ Icon(painter = painterResource(id = R.drawable.schedule_24px) , contentDescription ="DatePiker", modifier = Modifier
             .clickable { mDatePickerDialog.show() }
@@ -253,8 +284,8 @@ fun TimePiker(value:String,onValueChange:(String)->Unit){
 @Composable
 fun TextGray(text:String){
     Text(text = text,
-        fontSize = 20.sp,
-        color = Color.Gray
+        fontSize = 15.sp,
+        color = GrisOscuro
     )
 }
 

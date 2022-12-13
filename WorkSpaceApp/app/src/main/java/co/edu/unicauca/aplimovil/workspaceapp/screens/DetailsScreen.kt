@@ -28,6 +28,7 @@ import co.edu.unicauca.aplimovil.workspaceapp.models.Amenities
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
 import co.edu.unicauca.aplimovil.workspaceapp.models.Schedule
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Azul
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisOscuro
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Verde
 import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.WorkSpaceAppTheme
@@ -71,16 +72,14 @@ fun DetailsTopBar(navController: NavController?,placeName:String){
                     .clickable { navController?.popBackStack() })
             Column(modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 14.dp),
+                .padding(top = 14.dp, end = 25.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = placeName , fontWeight = FontWeight.Bold, fontSize = 22.sp)
+                Text(text = placeName , fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Azul)
             }
-
             /*modifier = Modifier.offset(x = 115.dp)*/
         }
     }
-
 }
 
 @Composable
@@ -110,8 +109,6 @@ fun CardPhoto(imageUrl:String,city:String){
                 .aspectRatio(15f / 9f, false)
         )
         //}
-
-
         Text(text = "$city - Colombia", modifier = Modifier.paddingFromBaseline(top=30.dp), fontSize = 15.sp, color = GrisOscuro)
     }
 
@@ -126,10 +123,10 @@ fun PlaceDescription(place: Place?){
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.Start) {
         Text(place?.description!!,
-            textAlign = TextAlign.Justify)
+            textAlign = TextAlign.Justify, color = GrisOscuro)
 
         Subtitles(texto = "Dirección")
-        Text(text = place.address!!,modifier = Modifier.paddingFromBaseline(top=30.dp))
+        Text(text = place.address!!,modifier = Modifier.paddingFromBaseline(top=30.dp), color = GrisOscuro)
         Subtitles(texto = "Horario")
         Schedule(place.get_Schedules())
         Subtitles(texto = "Comodidades")
@@ -147,9 +144,9 @@ fun Schedule(listSchedule: MutableList<Schedule>){
 
         for (schedule in listSchedule){
             Row(modifier = Modifier.padding(top=8.dp)) {
-                    Text(schedule.day!!)
+                    Text(schedule.day!!, color = GrisOscuro)
                     Spacer(Modifier.size(20.dp))
-                    Text(text = schedule.start_hour!! + " - " + schedule.end_hour!!)
+                    Text(text = schedule.start_hour!! + " - " + schedule.end_hour!!, color = GrisOscuro)
             }
 
         }
@@ -165,10 +162,11 @@ fun Comodities(listAmenities:MutableList<Amenities>){
                 Icon(
                     painter = painterResource(amenity.icon!!),
                     contentDescription = "Information",
-                    modifier = Modifier.size(23.dp)
+                    modifier = Modifier.size(23.dp),
+                    tint = GrisOscuro
                 )
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text(amenity.name!!)
+                Text(amenity.name!!, color = GrisOscuro)
             }
             Spacer(Modifier.size(10.dp))
         }
@@ -209,7 +207,7 @@ fun ReservationButton(place : Place?,navController: NavController?){
 
 @Composable
 fun Subtitles(texto : String){
-    Text(text = texto, modifier = Modifier.paddingFromBaseline(top=35.dp),fontWeight = FontWeight.Bold, fontSize = 20.sp)
+    Text(text = texto, modifier = Modifier.paddingFromBaseline(top=35.dp),fontWeight = FontWeight.Bold, fontSize = 20.sp, color = Azul)
 }
 
 @Preview(showBackground = true)

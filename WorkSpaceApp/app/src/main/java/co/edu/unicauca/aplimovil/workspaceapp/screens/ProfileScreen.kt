@@ -7,8 +7,12 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
@@ -22,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,6 +34,8 @@ import androidx.navigation.NavController
 import co.edu.unicauca.aplimovil.workspaceapp.R
 import co.edu.unicauca.aplimovil.workspaceapp.models.Sesion
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Azul
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisOscuro
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
@@ -52,10 +59,8 @@ fun ProfileBodyContent(navController: NavController?){
     if(currentUser!=null){
         sesion = SugarRecord.find(Sesion::class.java,"email = ?", currentUser)
     }
-
-
     Scaffold (
-        topBar = { TopBar(navController = navController, title = stringResource(id = R.string.profile_label))}
+        topBar = { ProfileTopBar(navController = navController) }
     ){
         Column(modifier = Modifier
             .padding(30.dp)
@@ -64,23 +69,41 @@ fun ProfileBodyContent(navController: NavController?){
             if(currentUser!=null){
                 profileInfo(sesion = sesion?.get(0) ?: null)
                 ButtonLogOut(navController = navController)
-                Text(text = stringResource(id = R.string.aboutus_label), modifier = Modifier.paddingFromBaseline(top=35.dp).clickable { navController?.navigate(route= AppScreens.AboutUsScreen.route) },fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                Text(text = stringResource(id = R.string.aboutus_label), modifier = Modifier
+                    .paddingFromBaseline(top = 35.dp)
+                    .clickable { navController?.navigate(route = AppScreens.AboutUsScreen.route) },fontWeight = FontWeight.Bold, fontSize = 20.sp)
             }else{
                 Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center) {
                     Subtitles(texto = stringResource(id = R.string.no_authenticated_label))
                     Spacer(modifier = Modifier.size(30.dp) )
                     ButtonLoggin(navController)
-                    Text(text = stringResource(id = R.string.aboutus_label), modifier = Modifier.paddingFromBaseline(top=35.dp).clickable { navController?.navigate(route= AppScreens.AboutUsScreen.route) },fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    Text(text = stringResource(id = R.string.aboutus_label), modifier = Modifier
+                        .paddingFromBaseline(top = 35.dp)
+                        .clickable { navController?.navigate(route = AppScreens.AboutUsScreen.route) },fontWeight = FontWeight.Bold, fontSize = 20.sp, color = GrisOscuro, textDecoration = TextDecoration.Underline)
                 }
 
             }
             Spacer(modifier = Modifier.size(30.dp) )
-
-            
         }
     }
 }
+
+@Composable
+fun ProfileTopBar(navController: NavController?){
+    Column {
+        TopAppBar(backgroundColor = Color.White) {
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 14.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = "Perfil", fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Azul)
+            }
+        }
+    }
+}
+
 @Composable
 fun profileInfo(sesion:Sesion?){
     Box( modifier = Modifier
