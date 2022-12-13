@@ -262,7 +262,9 @@ fun cardPlace(place: Place, navController: NavController) {
         Text(text = place.name.toString(),
             fontWeight = FontWeight.SemiBold,
             fontSize = 20.sp,
-            color = Azul)
+            color = Azul,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis)
         Box() {
             Image(
                 painter = painter,
