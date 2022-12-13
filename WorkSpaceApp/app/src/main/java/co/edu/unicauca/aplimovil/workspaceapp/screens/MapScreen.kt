@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,8 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Azul
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisOscuro
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.*
@@ -64,38 +67,35 @@ fun MapScreen(navController: NavController) {
 
 @Composable
 fun MapTopBar(navController: NavController?) {
-    Column() {
-        TopAppBar(backgroundColor = Color.White) {
-            androidx.compose.material.Icon(imageVector = Icons.Default.KeyboardArrowLeft,
+    Column {
+        TopAppBar(backgroundColor = Color.White){
+            Icon(imageVector = Icons.Default.KeyboardArrowLeft,
                 contentDescription = "Arrow Back",
                 modifier = Modifier
                     .size(33.dp)
                     .clickable { navController?.popBackStack() })
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 14.dp),
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 14.dp, end = 25.dp),
                 verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "Mapa", fontWeight = FontWeight.Bold, fontSize = 22.sp)
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = "Mapa" , fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Azul)
             }
-
+            /*modifier = Modifier.offset(x = 115.dp)*/
         }
     }
 }
 
 @Composable
 fun MapBodyContent(navController: NavController?) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 15.dp),
         verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+        horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = "¡Encuentra espacios de trabajo cercanos!",
-            modifier = Modifier.padding(top = 10.dp)
+            textAlign = TextAlign.Center,fontSize = 19.sp, color = GrisOscuro
         )
         checkLocationPermissions(navController)
     }

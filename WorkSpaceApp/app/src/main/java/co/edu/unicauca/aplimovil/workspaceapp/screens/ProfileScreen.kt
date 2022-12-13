@@ -71,7 +71,7 @@ fun ProfileBodyContent(navController: NavController?){
                 ButtonLogOut(navController = navController)
                 Text(text = stringResource(id = R.string.aboutus_label), modifier = Modifier
                     .paddingFromBaseline(top = 35.dp)
-                    .clickable { navController?.navigate(route = AppScreens.AboutUsScreen.route) },fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    .clickable { navController?.navigate(route = AppScreens.AboutUsScreen.route) },fontWeight = FontWeight.Bold, fontSize = 20.sp, color = GrisOscuro, textDecoration = TextDecoration.Underline)
             }else{
                 Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center) {

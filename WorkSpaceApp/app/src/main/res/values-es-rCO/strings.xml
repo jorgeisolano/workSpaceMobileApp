@@ -6,7 +6,7 @@
     <string name="information_please_label">Por favor ingresa tu información aquí</string>
     <string name="loggin_buttom">Iniciar Sesión</string>
     <string name="reset_password">Recupear Contraseña</string>
-    <string name="o_sigin_txt">O inica sesion con</string>
+    <string name="o_sigin_txt">O inicia sesión con</string>
     <string name="google_button">Google</string>
     <string name="description_label">Descripción</string>
     <string name="reservation_day_msg">Si desea reservar varios días por favor seleccione la fecha de salida.</string>
@@ -24,6 +24,6 @@
     <string name="discover_label">Descubre los mejores lugares para trabajar</string>
     <string name="start_button">Iniciar</string>
     <string name="aboutus_label">Acerca de nosotros</string>
-    <string name="descriptionApp">La aplicación ofrece una manera sencilla de encontrar y reservar espacios de coworking en Colombia. Un espacio de coworking es un espacio de trabajo que ofrece todo lo necesario para realizar tu actividad propia de la oficina, pero además ofrece zonas de trabajo y zonas de esparcimiento y descanso en las cuales te puedes beneficiar de una comunidad multidisciplinar de coworkers. (Qué Es Coworking, Cómo Funciona El Cotrabajo En 2022, 2022)</string>
+    <string name="descriptionApp">La aplicación ofrece una manera sencilla de encontrar y reservar espacios de coworking en Colombia. Un espacio de coworking es un espacio de trabajo que ofrece todo lo necesario para realizar tu actividad propia de la oficina, pero además ofrece zonas de trabajo y zonas de esparcimiento y descanso en las cuales te puedes beneficiar de una comunidad multidisciplinar de coworkers.</string>
     <string name="AppName">WorkSpaceApp</string>
 </resources>

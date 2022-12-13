@@ -300,7 +300,7 @@ fun cardPlace(place: Place, navController: NavController) {
                             }
                         }
                     }),
-                tint = if (favoritePlaceSelected.value) Color.Red else Blanco)
+                tint = if (favoritePlaceSelected.value) Verde else Blanco)
         }
         Column() {
             Text(text = place.city.toString() + " • Colombia", fontSize = 12.sp, color = Azul)

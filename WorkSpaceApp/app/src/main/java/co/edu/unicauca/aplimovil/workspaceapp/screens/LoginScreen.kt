@@ -47,6 +47,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import co.edu.unicauca.aplimovil.workspaceapp.R
 import co.edu.unicauca.aplimovil.workspaceapp.models.Sesion
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Azul
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisClaro
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisOscuro
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
@@ -88,23 +91,23 @@ fun PreviewContent(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(navController: NavController?, title: String){
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                title,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                fontWeight = FontWeight.Bold, fontSize = 22.sp
-            )
-        },
-        navigationIcon = {
+    Column {
+        androidx.compose.material.TopAppBar(backgroundColor = Color.White) {
             androidx.compose.material.Icon(imageVector = Icons.Default.KeyboardArrowLeft,
                 contentDescription = "Arrow Back",
                 modifier = Modifier
                     .size(33.dp)
                     .clickable { navController?.popBackStack() })
+            Column(modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 14.dp, end = 25.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = title, fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Azul)
+            }
+            /*modifier = Modifier.offset(x = 115.dp)*/
         }
-    )
+    }
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -121,14 +124,15 @@ fun loginBody(navController: NavController?){
             AsyncImage(model = ImageRequest.Builder(LocalContext.current)
                 .data(R.drawable.workspace)
                 .build(),
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize(0.9f),
+
                 contentDescription = "Profile")
         }
 
         Text(
             stringResource(id=R.string.information_please_label),
             fontSize = 20.sp,
-            color = Color.Gray
+            color = GrisOscuro
         )
         Spacer(modifier = Modifier.size(30.dp))
         var textCorreo by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -165,16 +169,6 @@ fun loginBody(navController: NavController?){
                 .padding(start = 15.dp, end = 15.dp),
             shape = ShapeDefaults.ExtraLarge
         )
-        Column(modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.End) {
-            Text(modifier=Modifier
-                .padding(end = 17.dp),
-                text=stringResource(id=R.string.reset_password),
-                fontSize = 20.sp,
-                textAlign= TextAlign.End,
-                color = Color.Black
-            )
-        }
         Spacer(modifier = Modifier.size(50.dp))
         LoginButton(navController,textCorreo,textPassword)
     }
@@ -196,7 +190,7 @@ fun LoginButton(navController: NavController?,email:TextFieldValue,password: Tex
         Text(
             stringResource(id=R.string.o_sigin_txt),
             fontSize = 20.sp,
-            color = Color.Black
+            color = GrisOscuro
         )
         Spacer(modifier = Modifier.size(25.dp))
 

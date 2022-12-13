@@ -162,6 +162,7 @@ fun bookingCards(place: Place, booking: Booking) {
         Text(text = place.name.toString(),
             modifier = Modifier.padding(start = 5.dp),
             fontWeight = FontWeight.Bold,
+            color = Azul,
             fontSize = 20.sp)
 
         Row(modifier = Modifier.padding(top = 10.dp)) {
@@ -176,19 +177,26 @@ fun bookingCards(place: Place, booking: Booking) {
             Column {
                 Text(text = "Ubicación",
                     fontWeight = FontWeight.Bold,
+                    color = Azul,
                     modifier = Modifier.padding(start = 20.dp))
                 Text(text = place.city.toString() + " - " + " Colombia - " + place.address.toString(),
+                    color = GrisOscuro,
                     modifier = Modifier.padding(start = 20.dp),fontSize = 13.sp)
                 Text(text = "Información de reserva",
+                    color = Azul,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(start = 20.dp))
                 Text(text = "Fecha Entrada: " + booking.checkin.toString(),
+                    color = GrisOscuro,
                     modifier = Modifier.padding(start = 20.dp),fontSize = 13.sp)
                 Text(text = "Fecha Salida: " +booking.checkout.toString(),
+                    color = GrisOscuro,
                     modifier = Modifier.padding(start = 20.dp),fontSize = 13.sp)
                 Text(text ="Entrada: " + booking.timeCheckin.toString() + " - " + "Salida: "+ booking.timeCheckout.toString(),
+                    color = GrisOscuro,
                     modifier = Modifier.padding(start = 20.dp),fontSize = 13.sp)
                 Text(text = booking.guest.toString() + " invitados",
+                    color = GrisOscuro,
                     modifier = Modifier.padding(start = 20.dp),fontSize = 13.sp)
             }
 

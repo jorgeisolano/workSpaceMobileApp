@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,10 +34,10 @@ import androidx.navigation.NavController
 import co.edu.unicauca.aplimovil.workspaceapp.models.FavoritePlace
 import co.edu.unicauca.aplimovil.workspaceapp.models.Place
 import co.edu.unicauca.aplimovil.workspaceapp.navigation.AppScreens
-import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Azul
-import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.Blanco
-import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisClaro
-import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.GrisOscuro
+import co.edu.unicauca.aplimovil.workspaceapp.ui.theme.*
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import coil.size.Size
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.orm.SugarRecord
@@ -104,7 +105,10 @@ private fun getFavoritePlace(place: Place): FavoritePlace? {
 fun favoriteCardPlace(place: FavoritePlace, navController: NavController){
     val placeJson = Uri.encode(Gson().toJson(place))
     val context = LocalContext.current
-
+    val painter =
+        rememberAsyncImagePainter(model = ImageRequest.Builder(LocalContext.current)
+            .data(place.favoritePlace?.image).size(
+                Size.ORIGINAL).build())
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier
@@ -117,8 +121,9 @@ fun favoriteCardPlace(place: FavoritePlace, navController: NavController){
             color = Azul)
         Box() {
             Image(
-                painter = painterResource(id = co.edu.unicauca.aplimovil.workspaceapp.R.drawable.ic_launcher_background),
+                painter = painter,
                 contentDescription = "Andy Rubin",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(170.dp)
                     .clip(RoundedCornerShape(15))
@@ -143,7 +148,7 @@ fun favoriteCardPlace(place: FavoritePlace, navController: NavController){
                             }
                         }
                     }),
-                tint = Color.Red)
+                tint = Verde)
         }
         Column() {
             Text(text = place.favoritePlace?.city.toString() + " • Colombia", fontSize = 12.sp, color = Azul)
