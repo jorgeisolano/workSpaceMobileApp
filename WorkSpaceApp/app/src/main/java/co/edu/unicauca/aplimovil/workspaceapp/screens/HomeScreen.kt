@@ -214,7 +214,7 @@ fun nearPlaces(location: Location, listPlaces: MutableList<Place>): MutableList<
             item.lat!!,
             item.long!!,
             distance)
-        if (distance[0] < 10000.0) {
+        if (distance[0] < 5000.0) {
             resPlaces.add(item)
         }
     }
