@@ -77,7 +77,7 @@ fun ReservationBodyContent(navController: NavController?,place: Place?){
             TextGray(text = place?.city!!)
             TextGray(text = place?.address!!)
             TextGray(text = stringResource(id = R.string.reservation_day_msg))
-            Text(text = "Screen Reservations")
+            
             Subtitles(texto = stringResource(id = R.string.checkin_label))
             val (valueIn ,onValueChangeIn) = rememberSaveable {mutableStateOf("") }
             DatePiker(valueIn,onValueChangeIn)
