@@ -150,7 +150,7 @@ fun loadData() {
         "Cl. 6 #2-31, Centro",
         2.4410834,
         -76.6029984,
-        "https://10619-2.s.cdn12.com/rests/original/109_502454224.jpg",
+        "https://media-cdn.tripadvisor.com/media/photo-p/15/67/ac/b4/welcome-to-caracol-cafe.jpg",
         "Cerrado los sabados"
     )
     place2.save()
@@ -180,7 +180,7 @@ fun loadData() {
         "Calle 15 Norte #15N-82",
         2.4879445,
         -76.5671511,
-        "https://media-cdn.tripadvisor.com/media/photo-p/15/67/ac/b4/welcome-to-caracol-cafe.jpg",
+        "https://10619-2.s.cdn12.com/rests/original/109_502454224.jpg",
         "Cerrado los Domingos"
     )
     place3.save()
