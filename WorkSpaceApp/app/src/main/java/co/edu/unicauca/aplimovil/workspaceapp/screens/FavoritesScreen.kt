@@ -15,9 +15,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +44,7 @@ import com.orm.query.Condition
 import com.orm.query.Select
 
 
+private var favoriteList = mutableStateListOf<FavoritePlace>()
 
 @Composable
 fun FavoritesScreen(navController: NavController){
@@ -64,8 +64,9 @@ fun FavoritesScreen(navController: NavController){
                 )
             }
         }else{
-            val auxFavPlace = FavoritePlace()
-            val favoriteList = auxFavPlace.getFavoritePlaces(currentUser)
+            val query = SugarRecord.find(FavoritePlace::class.java,"user_Email = ?", currentUser.toString())
+            favoriteList = remember { query.toMutableStateList() }
+            //elements = favoriteList as SnapshotStateList<FavoritePlace>
             FavoritesBodyContent(favoriteList,navController)
         }
     }
@@ -91,6 +92,8 @@ private fun onClickFavoriteIcon(place : Place): Boolean {
     if (response == null) return false
     var objFavoritePlace = SugarRecord.findById(FavoritePlace::class.java, response.id)
     objFavoritePlace.delete()
+    val favorite = favoriteList.find { it.favoritePlace?.id == objFavoritePlace.favoritePlace?.id }
+    favoriteList.remove(favorite)
     return true
 }
 
@@ -103,7 +106,7 @@ private fun getFavoritePlace(place: Place): FavoritePlace? {
 
 @Composable
 fun favoriteCardPlace(place: FavoritePlace, navController: NavController){
-    val placeJson = Uri.encode(Gson().toJson(place))
+    val placeJson = Uri.encode(Gson().toJson(place.favoritePlace))
     val context = LocalContext.current
     val painter =
         rememberAsyncImagePainter(model = ImageRequest.Builder(LocalContext.current)
@@ -118,6 +121,8 @@ fun favoriteCardPlace(place: FavoritePlace, navController: NavController){
         Text(text = place.favoritePlace?.name.toString(),
             fontWeight = FontWeight.SemiBold,
             fontSize = 20.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             color = Azul)
         Box() {
             Image(
@@ -128,6 +133,7 @@ fun favoriteCardPlace(place: FavoritePlace, navController: NavController){
                     .size(170.dp)
                     .clip(RoundedCornerShape(15))
                     .clickable(onClick = {
+                        println("JSON$placeJson")
                         navController.navigate(AppScreens.DetailScreen.route + "/" + placeJson)
                     })
             )
@@ -144,7 +150,7 @@ fun favoriteCardPlace(place: FavoritePlace, navController: NavController){
                                 showMessage(context, "El lugar ha sido eliminado de favoritos")
                             }
                             false -> {
-                            showMessage(context, "Error al eliminar de favoritos")
+                                showMessage(context, "Error al eliminar de favoritos")
                             }
                         }
                     }),
