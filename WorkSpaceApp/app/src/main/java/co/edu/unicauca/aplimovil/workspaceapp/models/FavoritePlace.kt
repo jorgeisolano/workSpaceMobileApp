@@ -19,11 +19,4 @@ class FavoritePlace: SugarRecord {
         return find(FavoritePlace::class.java,"user_Email = ?", pUserEmail)
     }
 
-    fun isFavoriteSaved(pUserEmail: String, favoritePlace: Place): Boolean {
-        var list = find(FavoritePlace::class.java,"user_Email = ?", pUserEmail)
-        list.forEach{place ->
-            if(place.id == favoritePlace.id) return true
-        }
-        return false
-    }
 }
